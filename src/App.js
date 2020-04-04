@@ -1,12 +1,18 @@
-import React from 'react';
-import './App.css';
+import React, {useEffect, useState} from 'react'
+import {BrowserRouter} from 'react-router-dom'
+import Header from './Header'
+import Content from './Content'
+import './App.css'
 
 function App() {
-  return (
-    <div className="App">
-      Welcome Marsian
-    </div>
-  );
+	return (
+		<BrowserRouter>
+			<div className="App-body">
+				<Header />
+				<Content />
+			</div>
+   	</BrowserRouter>
+  )
 }
 
-export default App;
+export default App
