@@ -46,7 +46,7 @@ const GameSpace = (props) => {
 		//top bar resource info
 		<div>
 			<ResourceBar water={props.water} food={props.food} people={props.people} />
-			<Route path="/lots" render={() => <LotsOverview />} />
+			<Route component={({match}) => <Route path='/lots' component={LotsOverview} /> }/>
 			<ActiveBuildings buildings={buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />
 		</div>
 		//routing to the main column based viewport

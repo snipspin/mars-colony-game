@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import {Button, Grid, Box} from '@material-ui/core'
 import BuildingCell from './BuildingCell'
+import AddNewBuilding from './AddNewBuilding'
+
 const ActiveBuildings = (props) => {
 	// const [buildings, setBuildings] = useState([])
 	//const type = "water"
@@ -37,6 +39,9 @@ const ActiveBuildings = (props) => {
 			{props.buildings.map(building => (
 				getJSX(building.type, building.level)
 			))}
+			<Grid item xs={12}>
+				<AddNewBuilding />
+			</Grid>
 		</Grid>
 	)
 

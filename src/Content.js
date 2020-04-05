@@ -27,6 +27,7 @@ const Content = (props) => {
 	return (
 		<Switch>
 			<Route exact path="/" render={() => <GameSpace water={water} food={food} people={people} setWater={setWater} setFood={setFood} setPeople={setPeople} />} />
+			<Route path="/lots" render={() => <GameSpace water={water} food={food} people={people} setWater={setWater} setFood={setFood} setPeople={setPeople} />} />
 		</Switch>
 	)
 }
