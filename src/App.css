@@ -27,7 +27,33 @@
 .App-link {
   color: #61dafb;
 }
-
+.resourceBarInfo {
+  margin: 5px;
+}
+.resourceNumberWater {
+  color: blue;
+  margin: 10px;
+}
+.resourceNumberFood {
+  color: green;
+  margin: 10px;
+}
+.resourceNumberPeople {
+  color: red;
+  margin: 10px;
+}
+.resourceLevelFood {
+  color: green;
+  margin-top: 10px;
+}
+.resourceLevelWater {
+  color: blue;
+  margin-top: 10px;
+}
+.resourceLevelPeople {
+  color: red;
+  margin-top: 10px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
