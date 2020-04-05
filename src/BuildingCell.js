@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-const WaterBuildingCell = (props) => {
+const BuildingCell = (props) => {
 	const [localResource, setLocalResource] = useState(0)
 	const [increment, setIncrement] = useState(1)
 //https://stackoverflow.com/questions/53395147/use-react-hook-to-implement-a-self-increment-counter
@@ -13,10 +13,16 @@ const WaterBuildingCell = (props) => {
 			clearTimeout(timeOut)
 		}
 	},[localResource])
+
+	useEffect(() => {
+		setLocalResource(0)
+	},[])
+
 	const clickHandler = (e) => {
 		e.preventDefault()
-		let amount = localResource + props.water
-		props.setWater(amount)
+		// props.onClick(localResource)
+		let amount = localResource + props.resource
+		props.setResource(amount)
 		setLocalResource(0)
 	}
 	const clickUpgradeHandler = (e) => {
@@ -33,4 +39,4 @@ const WaterBuildingCell = (props) => {
 		</div>
 	)
 }
-export default WaterBuildingCell
+export default BuildingCell
