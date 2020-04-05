@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {Button, Grid, Box} from '@material-ui/core'
 import BuildingCell from './BuildingCell'
 const ActiveBuildings = (props) => {
 	// const [buildings, setBuildings] = useState([])
@@ -7,25 +8,36 @@ const ActiveBuildings = (props) => {
 	const getJSX = (type, level) => {
 		if (type == "water") {
 			return (
-				<BuildingCell setResource={props.setWater} resource={props.water} />
+				<Grid item lg={12} style={{"border": "2px solid blue", "margin": "5px 0", "padding": "20px", "borderRadius": "10px", "maxWidth":"400px"}}>
+					<BuildingCell type={"Water"} setResource={props.setWater} resource={props.water} />
+				</Grid>
 			)
 		} else if (type == "food") {
 			return (
-				<BuildingCell setResource={props.setFood} resource={props.food} />
+				<Grid item lg={12} style={{"border": "2px solid green", "margin": "5px 0", "padding": "20px", "borderRadius": "10px", "maxWidth":"400px"}}>
+					<BuildingCell type={"Food"} setResource={props.setFood} resource={props.food} />
+				</Grid>
 			)
 		}
 		else if (type == "food") {
 			return (
-				<BuildingCell setResource={props.setPeople} resource={props.people} />
+				<Grid item xs={12}>
+					<BuildingCell type={"People"} setResource={props.setPeople} resource={props.people} />
+				</Grid>
 			)
 		}
 	}
 	return (
-		<div>
+		<Grid
+			container
+			direction="column"
+			justify="space-evenly"
+			alignItems = "center"
+		>
 			{props.buildings.map(building => (
 				getJSX(building.type, building.level)
 			))}
-		</div>
+		</Grid>
 	)
 
 }
