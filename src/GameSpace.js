@@ -3,6 +3,7 @@ import {Route, Switch} from 'react-router-dom'
 import ResourceBar from './ResourceBar'
 import ActiveBuildings from './ActiveBuildings'
 import BuildingCell from './BuildingCell'
+import LotsOverview from './LotsOverview'
 const GameSpace = (props) => {
 
 	// Get the initial set of buildings owned by player
@@ -10,8 +11,8 @@ const GameSpace = (props) => {
 	useEffect(() => {
 		// setBuildings([new RBWaterBuilding(props.water, props.setWater), new RBFoodBuilding(props.food, props.setFood)])
 		setBuildings([
-			{type:"water", level:1},
-			{type:"food", level:1}
+			{type:"water", level:1, lot:1},
+			{type:"food", level:1, lot:2}
 		])
 	},[])
 
@@ -45,6 +46,7 @@ const GameSpace = (props) => {
 		//top bar resource info
 		<div>
 			<ResourceBar water={props.water} food={props.food} people={props.people} />
+			<Route path="/lots" render={() => <LotsOverview />} />
 			<ActiveBuildings buildings={buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />
 		</div>
 		//routing to the main column based viewport
