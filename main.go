@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"github.com/gin-gonic/gin"
 =======
 
@@ -11,16 +12,20 @@ import (
 	"github.com/snipspin/mars-colony-game/controllers"
 	"github.com/snipspin/mars-colony-game/models"
 >>>>>>> 838101191badaa141d68ed014939558b1af7e51c
+=======
+>>>>>>> parent of 74bd3d8... small test that was reverted
 )
 
 func main() {
-	r := gin.Default()
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r.GET("/", func(c ))
+=======
+>>>>>>> parent of 74bd3d8... small test that was reverted
 	fs := http.FileServer(http.Dir("build"))
 	http.Handle("/", fs)
 	http.ListenAndServe(":"+port, nil)
