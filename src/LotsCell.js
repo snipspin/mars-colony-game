@@ -4,6 +4,7 @@ function LotsCell(props) {
   return(
     <div >
       LotsCell of {props.type}  
+      {props.extra}
     </div>
   )
 }
