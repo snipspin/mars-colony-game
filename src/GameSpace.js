@@ -14,8 +14,8 @@ const GameSpace = (props) => {
 			<ResourceBar water={props.water} food={props.food} people={props.people} />
 			<Switch>
 				<Route path='/lots' component={() => <LotsOverview worldSize={props.worldSize} worldLots={props.buildings} addNewBuildingToLot={props.addNewBuildingToLot} />} />
-				<Route path='/' component={() => <ActiveBuildings upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
-				<Route path='/active' component={() => <ActiveBuildings upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/' component={() => <ActiveBuildings updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/active' component={() => <ActiveBuildings updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
 			</Switch>
 			
 			
