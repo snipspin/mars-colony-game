@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import LotsCell from './LotsCell'
-import {Modal, makeStyles} from '@material-ui/core'
+import {Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
 import {buildings as buildingsFromDef} from './buildingsDef'
 /*
 props :
@@ -33,8 +33,11 @@ const LotsOverview = (props) => {
   const classes = useStyles()
   const [modalStyle]= useState(getModalStyle)
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    
+  const [newBuildingIndex, setNewBuildingIndex] = useState(-1)
+  const handleOpen = (e, index) => {
+    e.preventDefault()
+    console.log(index)
+    setNewBuildingIndex(index)
     setOpen(true);
   };
 
@@ -44,17 +47,32 @@ const LotsOverview = (props) => {
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
+      <Grid
+        container
+        display="column"
+        spacing={1}
+        justify="center"
+        alignItems="center"
+      >
+        <Grid style={{"text-align":"center"}} item xs={12}>
+          <h2>Add a new building:</h2>
+        </Grid>
+        <Grid style={{"text-align":"center"}} item xs={12}>
+          <Button variant="outlined">Ice Miner</Button>
+        </Grid>
+        <Grid style={{"text-align":"center"}} item xs={12}>
+          <Button variant="outlined">Farming Biosphere</Button>
+        </Grid>
+        <Grid style={{"text-align":"center"}} item xs={12}>
+          <Button variant="outlined">Housing Unit</Button>
+        </Grid>
+      </Grid>
     </div>
   );
 
   const button = (
     <button type="button" onClick={handleOpen}>
-        Open Modal
-      </button>
+    </button>
   )
 
   // const listOfBuildings = (
@@ -79,20 +97,36 @@ const LotsOverview = (props) => {
     return props.worldLots.map((lot, i) => {
       if (lot.type === 'empty') {
         // it's an emptyCell
-        return <LotsCell key={i} type="empty" extra={buildOnLot(lot.lot)} />
+        return (
+          <Grid style={{"border": "2px solid black", "height":"100%", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item xs={3}>
+            <ButtonBase key={i} style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "text-align":"center"}} focusRipple onClick={(e) => handleOpen(e,i)}>
+              <LotsCell key={i} type="empty" extra={buildOnLot(lot.lot)} />
+            </ButtonBase>
+          </Grid>
+         )
       }
       else {
         // it's some sort of building
-        return <LotsCell key={i} type={lot.type} extra="" />
+        return (
+          <Grid style={{"border": "2px solid black", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+            <LotsCell key={i} type={lot.type} extra="" />
+          </Grid>
+        )
       }
     })
   }
   return (
     <div>
-      {
-       renderWorld()
-      }
-      {button}
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        alignContent="center"
+        spacing={3}
+        style={{"maxWidth": "50vw", "margin":"0 auto"}}
+      >
+       {renderWorld()}
+      </Grid>
       <Modal
         open={open}
         onClose={handleClose}
