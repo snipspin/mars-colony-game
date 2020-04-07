@@ -3,9 +3,9 @@ import {Box, Button} from '@material-ui/core'
 import {withStyles} from '@material-ui/core/styles'
 import {green, blue, red} from '@material-ui/core/colors'
 const BuildingCell = (props) => {
-	const [localResource, setLocalResource] = useState(0)
-	const [increment, setIncrement] = useState(1)
-	const [buildingLevel, setBuildingLevel] = useState(1)
+	const [localResource, setLocalResource] = useState(props.amount)
+	const [increment, setIncrement] = useState(props.level)
+	const [buildingLevel, setBuildingLevel] = useState(props.level)
 	const [resourceType, setResourceType] = useState('')
 	const [resourceTypeLevel, setResourceTypeLevel] = useState('')
 	const GreenButton = withStyles(theme => ({
@@ -26,6 +26,7 @@ const BuildingCell = (props) => {
 		const timeOut = setTimeout(() => {
 			let amount = localResource + increment
 			setLocalResource(amount)
+			props.updateBuildingAmount(props.lot, amount)
 		}, 1000)
 		return () => {
 			clearTimeout(timeOut)
@@ -33,20 +34,18 @@ const BuildingCell = (props) => {
 	},[localResource])
 
 	useEffect(() => {
-		setLocalResource(0)
-		const typeClass = "resourceNumber" + props.type
-		const typeLevelClass = "resourceLevel" + props.type
-		setResourceType(typeClass)
-		setResourceTypeLevel(typeLevelClass)
-		setBuildingLevel(props.level)
-	},[])
 
+	}, [buildingLevel, increment])
+
+
+	
 	const clickHandler = (e) => {
 		e.preventDefault()
 		// props.onClick(localResource)
 		let amount = localResource + props.resource
 		props.setResource(amount)
 		setLocalResource(0)
+		props.updateBuildingAmount(props.lot, 0)
 	}
 	const clickUpgradeHandler = (e) => {
 		e.preventDefault()
