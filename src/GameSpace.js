@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Route, Switch} from 'react-router-dom'
+import {Route, Switch, Redirect} from 'react-router-dom'
 import ResourceBar from './ResourceBar'
 import ActiveBuildings from './ActiveBuildings'
 import BuildingCell from './BuildingCell'
@@ -23,11 +23,18 @@ const GameSpace = (props) => {
 		])
 	},[])
 
+	function addNewBuildingToLot(type,lot) {
+		let currentBuildings = buildings
+		let newBuilding = {type:type, level:1, lot:lot}
+		currentBuildings[lot] = newBuilding
+		setBuildings(currentBuildings)
+	}
+
 	return (
 		//top bar resource info
 		<div>
 			<ResourceBar water={props.water} food={props.food} people={props.people} />
-			<Route component={({match}) => <Route path='/lots' component={() => <LotsOverview worldSize={worldSize} worldLots={buildings} />} /> }/>
+			<Route component={({match}) => <Route path='/lots' component={() => <LotsOverview worldSize={worldSize} worldLots={buildings} addNewBuildingToLot={addNewBuildingToLot} />} /> }/>
 			<ActiveBuildings buildings={buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />
 		</div>
 		//routing to the main column based viewport

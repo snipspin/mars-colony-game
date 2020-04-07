@@ -2,10 +2,12 @@ import React, {useState} from 'react'
 import LotsCell from './LotsCell'
 import {Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
 import {buildings as buildingsFromDef} from './buildingsDef'
+import { Redirect, useHistory } from 'react-router-dom'
 /*
 props :
   worldSize
   worldLots
+  addNewBuildingToLot(type,lot)
 */
 function getModalStyle() {
   const top = 50
@@ -34,6 +36,9 @@ const LotsOverview = (props) => {
   const [modalStyle]= useState(getModalStyle)
   const [open, setOpen] = React.useState(false);
   const [newBuildingIndex, setNewBuildingIndex] = useState(-1)
+
+  const history = useHistory();
+
   const handleOpen = (e, index) => {
     e.preventDefault()
     console.log(index)
@@ -44,6 +49,12 @@ const LotsOverview = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  function handleNewBuildingButton(type) {
+    handleClose()
+    props.addNewBuildingToLot(type,newBuildingIndex)
+    history.push('/')
+  }
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -58,13 +69,13 @@ const LotsOverview = (props) => {
           <h2>Add a new building:</h2>
         </Grid>
         <Grid style={{"text-align":"center"}} item xs={12}>
-          <Button variant="outlined">Ice Miner</Button>
+          <Button variant="outlined" onClick={()=>handleNewBuildingButton("water")}>Ice Miner</Button>
         </Grid>
         <Grid style={{"text-align":"center"}} item xs={12}>
-          <Button variant="outlined">Farming Biosphere</Button>
+          <Button variant="outlined" onClick={()=>handleNewBuildingButton("food")}>Farming Biosphere</Button>
         </Grid>
         <Grid style={{"text-align":"center"}} item xs={12}>
-          <Button variant="outlined">Housing Unit</Button>
+          <Button variant="outlined" onClick={()=>handleNewBuildingButton("people")}>Housing Unit</Button>
         </Grid>
       </Grid>
     </div>
@@ -74,12 +85,6 @@ const LotsOverview = (props) => {
     <button type="button" onClick={handleOpen}>
     </button>
   )
-
-  // const listOfBuildings = (
-  //   buildingsFromDef.forEach(element => {
-  //     return element.type
-  //   })
-  // )
 
   const buildOnLot = (lotID) => {
     // Show a list of buildings a player can build
