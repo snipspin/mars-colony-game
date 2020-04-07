@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"os"
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/contrib/static"
-	"github.com/snipspin/mars-colony-game/controllers"
-	"github.com/snipspin/mars-colony-game/models"
 
+	static "github.com/gin-gonic/contrib/static"
+	gin "github.com/gin-gonic/gin"
+	controllers "github.com/snipspin/mars-colony-game/controllers"
+	models "github.com/snipspin/mars-colony-game/models"
 )
 
 func main() {
@@ -19,6 +20,10 @@ func main() {
 
 	r := gin.Default()
 	db := models.SetupModels() // new
+
+	if db != nil {
+		fmt.Println("DB exists")
+	}
 
 	r.Use(static.Serve("/", static.LocalFile("./build", true))) // static files have higher priority over dynamic routes
 	// when no route is found, serving static files is tried.

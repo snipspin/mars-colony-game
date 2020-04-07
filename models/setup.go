@@ -31,7 +31,7 @@ func SetupModels() *gorm.DB {
 	}
 	dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", sqlhost, sqluser, sqlpassword, sqldb)
 	db, err := gorm.Open("postgres", dbURI)
-	// defer db.Close()
+	defer db.Close()
 
 	if err != nil {
 		fmt.Println(err)
