@@ -21,7 +21,7 @@ const ActiveBuildings = (props) => {
 				</Grid>
 			)
 		}
-		else if (type === "food") {
+		else if (type === "people") {
 			return (
 				<Grid item xs={12}>
 					<BuildingCell upgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"People"} setResource={props.setPeople} resource={props.people} />

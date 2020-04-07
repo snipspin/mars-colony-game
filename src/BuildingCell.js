@@ -52,7 +52,6 @@ const BuildingCell = (props) => {
 		e.preventDefault()
 		let amount = increment + 1
 		setIncrement(amount)
-		console.log(`clicked Lot:${props.lot} set Level to: ${amount}`)
 		props.upgradeBuildingInLot(props.lot, amount)
 		setBuildingLevel(amount)
 	}
@@ -75,7 +74,17 @@ const BuildingCell = (props) => {
 					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
 				</Box>
 			)
+		} else if(props.type == "People") {
+			return (
+				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
+					<BlueButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</BlueButton>
+					<span className={resourceType}>{localResource}</span>
+					<BlueButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</BlueButton>
+					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
+				</Box>
+			)
 		}
+		
 	}
 	const getUpgradeButton = () => {
 		if(props.type == "Food") {
