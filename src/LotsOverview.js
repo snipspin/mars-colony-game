@@ -117,6 +117,11 @@ const LotsOverview = (props) => {
         style={{"maxWidth": "50vw", "margin":"0 auto"}}
       >
        {renderWorld()}
+        <Grid>
+          <Button onClick={()=>setRedirect(true)}>
+            Back to main view
+          </Button>
+        </Grid>
       </Grid>
       <Modal
         open={open}
