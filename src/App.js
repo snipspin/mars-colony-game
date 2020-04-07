@@ -11,8 +11,8 @@ function App() {
 				<Header />
 				<Content />
 			</div>
-   	</BrowserRouter>
-  )
+   		</BrowserRouter>
+  	)
 }
 
 export default App
