@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import LotsCell from './LotsCell'
 import {Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
 import {buildings as buildingsFromDef} from './buildingsDef'
-import { Redirect, useHistory } from 'react-router-dom'
+import { useHistory, Redirect } from 'react-router-dom'
 /*
 props :
   worldSize
@@ -36,6 +36,7 @@ const LotsOverview = (props) => {
   const [modalStyle]= useState(getModalStyle)
   const [open, setOpen] = React.useState(false);
   const [newBuildingIndex, setNewBuildingIndex] = useState(-1)
+  const [redirect, setRedirect] = useState(false)
 
   const history = useHistory();
 
@@ -53,7 +54,8 @@ const LotsOverview = (props) => {
   function handleNewBuildingButton(type) {
     handleClose()
     props.addNewBuildingToLot(type,newBuildingIndex)
-    history.push('/')
+    // history.push('/active')
+    setRedirect(true)
   }
 
   const body = (
@@ -81,23 +83,6 @@ const LotsOverview = (props) => {
     </div>
   );
 
-  const button = (
-    <button type="button" onClick={handleOpen}>
-    </button>
-  )
-
-  const buildOnLot = (lotID) => {
-    // Show a list of buildings a player can build
-    // let listOfBuildings
-    // buildingsFromDef.forEach(element => {
-    //   listOfBuildings += element.type + " " + lotID
-    // });
-    // return listOfBuildings + button
-    // on cancel close Modal
-    //return listOfBuildings
-    return button
-  }
-
   const renderWorld = () => {
     return props.worldLots.map((lot, i) => {
       if (lot.type === 'empty') {
@@ -105,7 +90,7 @@ const LotsOverview = (props) => {
         return (
           <Grid style={{"border": "2px solid black", "height":"100%", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item xs={3}>
             <ButtonBase key={i} style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "text-align":"center"}} focusRipple onClick={(e) => handleOpen(e,i)}>
-              <LotsCell key={i} type="empty" extra={buildOnLot(lot.lot)} />
+              <LotsCell key={i} type="empty" />
             </ButtonBase>
           </Grid>
          )
@@ -114,12 +99,13 @@ const LotsOverview = (props) => {
         // it's some sort of building
         return (
           <Grid style={{"border": "2px solid black", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
-            <LotsCell key={i} type={lot.type} extra="" />
+            <LotsCell key={i} type={lot.type} />
           </Grid>
         )
       }
     })
   }
+
   return (
     <div>
       <Grid
@@ -140,6 +126,7 @@ const LotsOverview = (props) => {
       >
         {body}
       </Modal>
+      {redirect?<Redirect to='/active' />:''}
     </div>
   )
 } 
