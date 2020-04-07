@@ -7,24 +7,24 @@ const ActiveBuildings = (props) => {
 	// const [buildings, setBuildings] = useState([])
 	//const type = "water"
 	
-	const getJSX = (type, level) => {
+	const getJSX = (type, level, lot) => {
 		if (type === "water") {
 			return (
 				<Grid item lg={12} style={{"border": "2px solid blue", "margin": "5px 0", "padding": "20px", "borderRadius": "10px", "maxWidth":"400px"}}>
-					<BuildingCell type={"Water"} setResource={props.setWater} resource={props.water} />
+					<BuildingCell upgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"Water"} setResource={props.setWater} resource={props.water} />
 				</Grid>
 			)
 		} else if (type === "food") {
 			return (
 				<Grid item lg={12} style={{"border": "2px solid green", "margin": "5px 0", "padding": "20px", "borderRadius": "10px", "maxWidth":"400px"}}>
-					<BuildingCell type={"Food"} setResource={props.setFood} resource={props.food} />
+					<BuildingCell upgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"Food"} setResource={props.setFood} resource={props.food} />
 				</Grid>
 			)
 		}
-		else if (type === "food") {
+		else if (type === "people") {
 			return (
 				<Grid item xs={12}>
-					<BuildingCell type={"People"} setResource={props.setPeople} resource={props.people} />
+					<BuildingCell upgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"People"} setResource={props.setPeople} resource={props.people} />
 				</Grid>
 			)
 		}
@@ -37,7 +37,7 @@ const ActiveBuildings = (props) => {
 			alignItems = "center"
 		>
 			{props.buildings.map(building => (
-				getJSX(building.type, building.level)
+				getJSX(building.type, building.level, building.lot)
 			))}
 			<Grid item xs={12}>
 				<AddNewBuilding />
