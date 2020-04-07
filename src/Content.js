@@ -32,8 +32,16 @@ const Content = (props) => {
 			setBuildings(currentBuildings)
 		}
 
+		function upgradeBuildingInLot(lot, level) {
+			let currentBuildings = buildings
+			let currentBuilding = buildings[lot]
+			currentBuilding.level = level
+			currentBuildings[lot] = currentBuilding
+			setBuildings(currentBuildings)
+		}
+
 	return (
-		<GameSpace water={water} food={food} people={people} setWater={setWater} setFood={setFood} setPeople={setPeople} addNewBuildingToLot={addNewBuildingToLot} buildings={buildings} setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} />
+		<GameSpace water={water} food={food} people={people} setWater={setWater} setFood={setFood} setPeople={setPeople} addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} buildings={buildings} setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} />
 	)
 }
 export default Content

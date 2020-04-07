@@ -5,6 +5,7 @@ import {green, blue, red} from '@material-ui/core/colors'
 const BuildingCell = (props) => {
 	const [localResource, setLocalResource] = useState(0)
 	const [increment, setIncrement] = useState(1)
+	const [buildingLevel, setBuildingLevel] = useState(1)
 	const [resourceType, setResourceType] = useState('')
 	const [resourceTypeLevel, setResourceTypeLevel] = useState('')
 	const GreenButton = withStyles(theme => ({
@@ -37,6 +38,7 @@ const BuildingCell = (props) => {
 		const typeLevelClass = "resourceLevel" + props.type
 		setResourceType(typeClass)
 		setResourceTypeLevel(typeLevelClass)
+		setBuildingLevel(props.level)
 	},[])
 
 	const clickHandler = (e) => {
@@ -50,6 +52,9 @@ const BuildingCell = (props) => {
 		e.preventDefault()
 		let amount = increment + 1
 		setIncrement(amount)
+		console.log(`clicked Lot:${props.lot} set Level to: ${amount}`)
+		props.upgradeBuildingInLot(props.lot, amount)
+		setBuildingLevel(amount)
 	}
 	const getBuilding = () => {
 		if(props.type == "Food") {
@@ -58,7 +63,7 @@ const BuildingCell = (props) => {
 					<GreenButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</GreenButton>
 					<span className={resourceType}>{localResource}</span>
 					<GreenButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</GreenButton>
-					<span className={resourceTypeLevel}>Level: {increment}</span>
+					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
 				</Box>
 			)
 		} else if(props.type == "Water") {
@@ -67,7 +72,7 @@ const BuildingCell = (props) => {
 					<BlueButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</BlueButton>
 					<span className={resourceType}>{localResource}</span>
 					<BlueButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</BlueButton>
-					<span className={resourceTypeLevel}>Level: {increment}</span>
+					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
 				</Box>
 			)
 		}
