@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
 	"os"
 
 	static "github.com/gin-gonic/contrib/static"
 	gin "github.com/gin-gonic/gin"
 	controllers "github.com/snipspin/mars-colony-game/controllers"
 	models "github.com/snipspin/mars-colony-game/models"
+	"github.com/snipspin/mars-colony-game/packages/db"
 )
 
 func main() {
@@ -19,32 +20,32 @@ func main() {
 	// fs := http.FileServer(http.Dir("build"))
 
 	r := gin.Default()
-	db := models.SetupModels() // new
 
-	if db != nil {
-		fmt.Println("DB exists")
+	db := db.NewDBConnection()
+	conn, err := db.Open()
+
+	if err != nil {
+		panic("failed to connect database")
 	}
+	defer conn.Close()
 
-	r.Use(static.Serve("/", static.LocalFile("./build", true))) // static files have higher priority over dynamic routes
-	// when no route is found, serving static files is tried.
+	// setup database models
+	models.SetupModels(conn)
+
+	// set db variable to conn
 	r.Use(func(c *gin.Context) {
-		c.Set("db", db)
+		c.Set("db", conn)
 		c.Next()
 	})
 
-	// r.StaticFS("/", http.Dir("build"))
-	// r.StaticFS("/lots/", http.StripPrefix("/lots/", http.Dir("build")))
+	// serve static files first
+	r.Use(static.Serve("/", static.LocalFile("./build", true)))
+
 	r.GET("/users", controllers.FindUsers)
 
-	// r.GET("/", )
-
-	// r.GET("/", func(c *gin.Context) {
-	// 	c.JSON(http.StatusOK, gin.H{"data": "hello world"})
-	// })
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"data": "pong"})
+	})
 
 	r.Run(":" + port)
-
-	// http.Handle("/lots/", http.StripPrefix("/lots/", fs))
-	// http.ListenAndServe(":"+port, nil)
-
 }
