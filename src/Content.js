@@ -6,6 +6,9 @@ const Content = (props) => {
 	let [water, setWater] = useState(100)
 	let [food, setFood] = useState(200)
 	let [people, setPeople] = useState(100)
+	const [waterThreshold, setWaterThreshold] = useState(200)
+  	const [foodThreshold, setFoodThreshold] = useState(400)
+  	const [peopleThreshold, setPeopleThreshold] = useState(500)
 
 		// Get the initial set of buildings owned by player
 	const [buildings, setBuildings] = useState([])
@@ -95,7 +98,13 @@ const Content = (props) => {
 	}
 
 	return (
-		<GameSpace water={water} food={food} people={people} setWater={setWater} setFood={setFood} setPeople={setPeople} addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} updateBuildingAmount={updateBuildingAmount} buildings={buildings} setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} />
+		<GameSpace water={water} food={food} people={people} 
+		setWater={setWater} setFood={setFood} setPeople={setPeople} 
+		addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} 
+		updateBuildingAmount={updateBuildingAmount} buildings={buildings} 
+		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} 
+		waterThreshold={waterThreshold} foodThreshold={foodThreshold} peopleThreshold={peopleThreshold} 
+		setWaterThreshold={setWaterThreshold} setFoodThreshold={setFoodThreshold} setPeopleThreshold={setPeopleThreshold} />
 	)
 }
 export default Content

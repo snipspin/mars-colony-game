@@ -37,7 +37,6 @@ const LotsOverview = (props) => {
   const [open, setOpen] = React.useState(false);
   const [newBuildingIndex, setNewBuildingIndex] = useState(-1)
   const [redirect, setRedirect] = useState(false)
-
   const history = useHistory();
 
   const handleOpen = (e, index) => {
@@ -53,6 +52,19 @@ const LotsOverview = (props) => {
 
   function handleNewBuildingButton(type) {
     handleClose()
+    if(type === "water") {
+      let tempThreshold = props.waterThreshold
+      tempThreshold *= 2
+      props.setWaterThreshold(tempThreshold)
+    } else if(type === "food") {
+      let tempThreshold = props.foodThreshold
+      tempThreshold *= 2
+      props.setFoodThreshold(tempThreshold)
+    } else {
+      let tempThreshold = props.peopleThreshold
+      tempThreshold *= 2
+      props.setPeopleThreshold(tempThreshold)      
+    }
     props.addNewBuildingToLot(type,newBuildingIndex)
     // history.push('/active')
     setRedirect(true)
@@ -71,13 +83,22 @@ const LotsOverview = (props) => {
           <h2>Add a new building:</h2>
         </Grid>
         <Grid style={{"text-align":"center"}} item xs={12}>
-          <Button variant="outlined" onClick={()=>handleNewBuildingButton("water")}>Ice Miner</Button>
+          {props.people >= props.peopleThreshold ? 
+            <Button variant="outlined" onClick={()=>handleNewBuildingButton("water")}>Ice Miner</Button>
+            : <Button disabled="true" variant="outlined" onClick={()=>handleNewBuildingButton("water")}>Ice Miner</Button>
+          }
         </Grid>
         <Grid style={{"text-align":"center"}} item xs={12}>
-          <Button variant="outlined" onClick={()=>handleNewBuildingButton("food")}>Farming Biosphere</Button>
+          {props.water >= props.waterThreshold ?
+            <Button variant="outlined" onClick={()=>handleNewBuildingButton("food")}>Farming Biosphere</Button>
+            : <Button disabled="true" variant="outlined" onClick={()=>handleNewBuildingButton("food")}>Farming Biosphere</Button>
+          }
         </Grid>
         <Grid style={{"text-align":"center"}} item xs={12}>
-          <Button variant="outlined" onClick={()=>handleNewBuildingButton("people")}>Housing Unit</Button>
+          {(props.food >= props.foodThreshold && props.water >= props.waterThreshold) ? 
+            <Button variant="outlined" onClick={()=>handleNewBuildingButton("people")}>Housing Unit</Button>
+            : <Button disabled="true" variant="outlined" onClick={()=>handleNewBuildingButton("food")}>Housing Unit</Button>
+          }
         </Grid>
       </Grid>
     </div>
@@ -97,11 +118,26 @@ const LotsOverview = (props) => {
       }
       else {
         // it's some sort of building
-        return (
-          <Grid style={{"border": "2px solid black", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
-            <LotsCell key={i} type={lot.type} />
-          </Grid>
-        )
+        if(lot.type === "water") {
+          return (
+            <Grid style={{"border": "2px solid blue", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+              <LotsCell key={i} type={lot.type} />
+            </Grid>
+          )
+        } else if(lot.type === "food") {
+          return (
+            <Grid style={{"border": "2px solid green", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+              <LotsCell key={i} type={lot.type} />
+            </Grid>
+          )          
+        } else {
+          return (
+            <Grid style={{"border": "2px solid red", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+              <LotsCell key={i} type={lot.type} />
+            </Grid>
+          ) 
+
+        }
       }
     })
   }
@@ -117,10 +153,10 @@ const LotsOverview = (props) => {
         style={{"maxWidth": "50vw", "margin":"0 auto"}}
       >
        {renderWorld()}
-        <Grid>
-          <Button onClick={()=>setRedirect(true)}>
-            Back to main view
-          </Button>
+        <Grid style={{"border": "2px solid grey", "height":"100%", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item xs={3}>
+          <ButtonBase style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "text-align":"center"}} focusRipple onClick={()=>setRedirect(true)}>
+            <span style={{"height": "100%", "fontSize": "1.5em"}}>Back To Main View</span>
+          </ButtonBase>
         </Grid>
       </Grid>
       <Modal

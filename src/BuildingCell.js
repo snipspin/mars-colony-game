@@ -20,6 +20,12 @@ const BuildingCell = (props) => {
     		borderColor: blue[500],
   		},
 	}))(Button);
+	const RedButton = withStyles(theme => ({
+		root: {
+    		color: "black",
+    		borderColor: red[500]
+  		},
+	}))(Button);
 
 //https://stackoverflow.com/questions/53395147/use-react-hook-to-implement-a-self-increment-counter
 	useEffect(() => {
@@ -76,9 +82,9 @@ const BuildingCell = (props) => {
 		} else if(props.type == "People") {
 			return (
 				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
-					<BlueButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</BlueButton>
+					<RedButton variant="outlined" onClick={(e) => clickHandler(e)}>Nurture</RedButton>
 					<span className={resourceType}>{localResource}</span>
-					<BlueButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</BlueButton>
+					<RedButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</RedButton>
 					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
 				</Box>
 			)
