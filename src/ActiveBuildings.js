@@ -23,8 +23,8 @@ const ActiveBuildings = (props) => {
 		}
 		else if (type === "people") {
 			return (
-				<Grid item xs={12}>
-					<BuildingCell updateBuildingAmount={props.updateBuildingAmount} upupgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"People"} setResource={props.setPeople} resource={props.people} amount={amount} />
+				<Grid item lg={12}>
+					<BuildingCell updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"People"} setResource={props.setPeople} resource={props.people} amount={amount} />
 				</Grid>
 			)
 		}

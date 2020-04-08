@@ -85,17 +85,7 @@ const BuildingCell = (props) => {
 		}
 		
 	}
-	const getUpgradeButton = () => {
-		if(props.type == "Food") {
-			return (
-				<GreenButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</GreenButton>
-			)
-		} else{
-			return( 
-				<Button variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</Button>
-			)
-		}
-	}
+	
 	return (
 		<Box style={{"width":"300px"}}>
 			{getBuilding}
