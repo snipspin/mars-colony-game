@@ -24,17 +24,38 @@ const Content = (props) => {
 		{type:"empty", level:0, lot:7, amount:0},
 		{type:"empty", level:0, lot:8, amount:0}, 
 	]
+
+	useEffect(()=> {
+		if (useLocalStorage) {
+			let resources = {water: water, food: food, people: people}
+			localStorage.setItem("resources", JSON.stringify(resources) )
+		}
+	},[water, food, people])
+
 		// const [activeContent, setActiveContent] = useState('active')
 	useEffect(() => {		
 		if (typeof(Storage) !== "undefined") {
 			// We have access to local storage
 			let storedBuildings = JSON.parse(localStorage.getItem("buildings"))
+			let storedResources = JSON.parse(localStorage.getItem("resources"))
+
 			setUseLocalStorage(true)
 			if (storedBuildings !== null && storedBuildings.length > 0) {
 				setBuildings(storedBuildings)
 			} else {
 				setBuildings(defaultBuildings)
 			}
+
+			if (storedResources !== null) {
+				setWater(storedResources.water)
+				setFood(storedResources.food)
+				setPeople(storedResources.people)
+			} else {
+				setWater(100)
+				setFood(200)
+				setPeople(100)
+			}
+
 		} else {
 			// Set the default values
 			setBuildings(defaultBuildings)
