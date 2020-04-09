@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -46,17 +47,22 @@ func SignUp(c *gin.Context) {
 	db.Create(&newStockpile)
 
 	// create new buildings
-	newBuildings := [3]models.Building{}
+	newBuildings := [9]models.Building{}
 	setNewBuilding("People", "0", &newBuildings[0], userCreated)
 	setNewBuilding("Water", "1", &newBuildings[1], userCreated)
 	setNewBuilding("Food", "2", &newBuildings[2], userCreated)
+	lot := strconv.Itoa(3)
+	for count := 3; count <= 8; count++ {
+		lot = strconv.Itoa(count)
+		setNewBuilding("Empty", lot, &newBuildings[count], userCreated)
+	}
 
 	for _, cb := range newBuildings {
 		db.Create(&cb)
 	}
 
 	// respond with user created, the stockpile and default buildings
-	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings})
+	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings, "user": userCreated})
 	return
 }
 

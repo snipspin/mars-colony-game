@@ -9,3 +9,9 @@ type Login struct {
 type CheckNick struct {
 	Nickname string `form:"user" json:"user" xml:"user"  binding:"required"`
 }
+
+type SaveUserState struct {
+	Nickname  string `form:"user" json:"user" xml:"user"  binding:"required"`
+	Resources Resources
+	Buildings MultiBuildings
+}
