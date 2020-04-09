@@ -53,7 +53,7 @@ const SignUpCom = (props) => {
             user,
             password
         }
-        fetch(`https://localhost:8080/api/signup`, {
+        fetch(`http://localhost:8080/api/signup`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -63,7 +63,7 @@ const SignUpCom = (props) => {
         .then ((response) => {
             response.json().then(result => {
                 if(response.ok) {
-                    props.setUser(result.user)
+                    props.updateUser(result)
                     props.setSignedIn(true)
                 //props.updateUser(result.token)
                 } else {
@@ -84,6 +84,9 @@ const SignUpCom = (props) => {
         setSendHome(true)
     }
     if(sendHome) {
+        return <Redirect to="/" />
+    }
+    if(props.signedIn){
         return <Redirect to="/" />
     }
 

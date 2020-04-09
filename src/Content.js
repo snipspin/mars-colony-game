@@ -86,6 +86,13 @@ const Content = (props) => {
 			setPeople(100)
 		}
 	}
+	function updateUser(username) {
+		if(useLocalStorage) {
+			localStorage.setItem("user", JSON.stringify(username))
+			let storedUser = localStorage.getItem("user")
+			setUser(storedUser)
+		}
+	}
 	function storeLocalState() {
 		if (useLocalStorage) {
 			localStorage.setItem("buildings", JSON.stringify(buildings) )
@@ -128,11 +135,11 @@ const Content = (props) => {
 	return (
 		<GameSpace 
 		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn}
-		water={water} food={food} people={people} setUser={setUser}
+		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}
 		setWater={setWater} setFood={setFood} setPeople={setPeople} updateTimer={updateTimer}
 		addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} 
 		updateBuildingAmount={updateBuildingAmount} buildings={buildings} reset={handleResetButton}
-		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} 
+		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize}
 		waterThreshold={waterThreshold} foodThreshold={foodThreshold} peopleThreshold={peopleThreshold} 
 		setWaterThreshold={setWaterThreshold} setFoodThreshold={setFoodThreshold} setPeopleThreshold={setPeopleThreshold} />
 	)

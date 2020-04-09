@@ -11,7 +11,7 @@ const GameSpace = (props) => {
 		//top bar resource info
 		<div>
 			<Switch>
-				<Route path='/signup' component={()=> <SignUpComp setUser={setUser} signup={props.signup} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
+				<Route path='/signup' component={()=> <SignUpComp updateUser={props.updateUser} setUser={props.setUser} signup={props.signup} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
 				<Route path='/lots' component={() => 
 					<LotsOverview water={props.water} food={props.food} people={props.people}
 						setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} 
