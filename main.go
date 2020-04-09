@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/snipspin/mars-colony-game/controllers"
+	"github.com/snipspin/mars-colony-game/db"
 	"github.com/snipspin/mars-colony-game/models"
-	"github.com/snipspin/mars-colony-game/packages/db"
 )
 
 func main() {
@@ -17,8 +17,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-
-	// fs := http.FileServer(http.Dir("build"))
 
 	r := gin.Default()
 
@@ -44,7 +42,7 @@ func main() {
 
 	r.POST("/api/signup", controllers.SignUp)
 	r.POST("/api/checknick", controllers.CheckForNickname)
-	r.POST("/api/stockpile", controllers.Stockpile)
+	r.POST("/api/stockpile", controllers.GetUserStockpile)
 
 	r.GET("/users", controllers.FindUsers)
 

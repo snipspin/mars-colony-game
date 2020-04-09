@@ -17,29 +17,39 @@ func FindUsers(c *gin.Context) {
 
 func SignUp(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	var json = models.UserJson{}
+	var json = models.Login{}
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	// create the temporary data
 	newUser := models.User{Nickname: json.Nickname, Email: json.Email, Password: json.Password}
-	userRecord := models.User{}
-	newStockpile := models.Stockpile{}
-	// check if user exists in db
-	isUser := UserExists(db, json.Nickname)
-	// create the new user
-	if !isUser {
-		db.Create(&newUser)
-		db.Where("nickname = ?", newUser.Nickname).First(&userRecord)
-		newStockpile = models.Stockpile{UserID: userRecord.ID, Water: "100", Food: "100", People: "100"}
-		db.Create(&newStockpile)
-		// respond with user created
-		c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userRecord.ID).First(&newStockpile)})
+	newUser.Prepare()
+
+	// validate user data and respond with an error if any
+	err := newUser.Validate("")
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err})
 		return
 	}
-	// respond with user exists
-	c.JSON(http.StatusOK, gin.H{"status": "exists"})
+
+	// create the new user
+	userCreated, err := newUser.SaveUser(db)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err})
+		return
+	}
+
+	// create a new stockpile for the new user
+	newStockpile := models.Stockpile{UserID: userCreated.ID, Water: "100", Food: "100", People: "100"}
+	db.Create(&newStockpile)
+
+	// create new buildings
+
+	// respond with user created, the stockpile and default buildings
+	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile)})
+	return
 }
 
 func UserExists(conn *gorm.DB, nickname string) bool {
@@ -53,7 +63,7 @@ func UserExists(conn *gorm.DB, nickname string) bool {
 
 func CheckForNickname(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	json := models.NickJson{}
+	json := models.CheckNick{}
 	// check if context matches requirements
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
