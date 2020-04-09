@@ -27,7 +27,6 @@ const ActiveBuildings = (props) => {
 		}
 		else if (type === "people") {
 			return (
-
 				<Grid item lg={12} style={{"border": "2px solid red", "margin": "5px 0", "padding": "20px", "borderRadius": "10px", "maxWidth":"400px"}}>
 					<BuildingCell timer={timer} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} level={level} lot={lot} type={"People"} setResource={props.setPeople} resource={props.people} amount={amount} />
 				</Grid>
