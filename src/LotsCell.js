@@ -4,15 +4,15 @@ function LotsCell(props) {
 	const displayBuilding = () => {
 		if(props.type === "water") {
 			return (
-				<h4 style={{"fontWeight": "normal", "text-align":"center"}}>Ice Mining Plant</h4>
+				<h4 style={{"fontSize":"1em", "margin": "0 auto", "fontWeight": "normal", "text-align":"center"}}>Ice Mining Plant</h4>
 			)
 		} else if(props.type === "food") {
 			return(
-				<h4 style={{"fontWeight": "normal", "text-align":"center"}}>Farming Biosphere</h4>
+				<h4 style={{"fontSize":"1em", "fontWeight": "normal", "text-align":"center"}}>Farming Biosphere</h4>
 			)
 		} else if(props.type === "people"){
 			return (
-				<h4 style={{"fontWeight": "normal", "text-align":"center"}}>Housing Unit</h4>
+				<h4 style={{"fontSize":"1em", "fontWeight": "normal", "text-align":"center"}}>Housing Unit</h4>
 			)
 		} else {
 			return (
@@ -21,7 +21,7 @@ function LotsCell(props) {
 		}
 	}
   return(
-    <Box style={{"display": "flex", "justifyContent": "center", "alignItems": "center", "text-align":"center","height": "50px"}}>
+    <Box style={{"height": "100%"}}>
     	{displayBuilding}
     </Box>
   )

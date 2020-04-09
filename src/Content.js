@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
-
+import {Button} from '@material-ui/core'
 const Content = (props) => {
 	let [water, setWater] = useState(100)
-	let [food, setFood] = useState(200)
+	let [food, setFood] = useState(100)
 	let [people, setPeople] = useState(100)
-	const [waterThreshold, setWaterThreshold] = useState(200)
-  	const [foodThreshold, setFoodThreshold] = useState(400)
-  	const [peopleThreshold, setPeopleThreshold] = useState(500)
+	const [waterThreshold, setWaterThreshold] = useState(0)
+  	const [foodThreshold, setFoodThreshold] = useState(0)
+  	const [peopleThreshold, setPeopleThreshold] = useState(0)
 
 		// Get the initial set of buildings owned by player
 	const [buildings, setBuildings] = useState([])
@@ -17,15 +17,15 @@ const Content = (props) => {
 
 	const defaultBuildings = 
 	[
-		{type:"empty", level:0, lot:0, amount:0},
-		{type:"water", level:1, lot:1, amount:0},
-		{type:"food", level:1, lot:2, amount:0},
-		{type:"empty", level:0, lot:3, amount:0},
-		{type:"empty", level:0, lot:4, amount:0},
-		{type:"empty", level:0, lot:5, amount:0},
-		{type:"empty", level:0, lot:6, amount:0},
-		{type:"empty", level:0, lot:7, amount:0},
-		{type:"empty", level:0, lot:8, amount:0}, 
+		{type:"empty", level:0, lot:0, amount:0, timer:15},
+		{type:"water", level:1, lot:1, amount:0, timer:15},
+		{type:"food", level:1, lot:2, amount:0, timer:15},
+		{type:"empty", level:0, lot:3, amount:0, timer:15},
+		{type:"empty", level:0, lot:4, amount:0, timer:15},
+		{type:"empty", level:0, lot:5, amount:0, timer:15},
+		{type:"empty", level:0, lot:6, amount:0, timer:15},
+		{type:"empty", level:0, lot:7, amount:0, timer:15},
+		{type:"empty", level:0, lot:8, amount:0, timer:15}, 
 	]
 
 	useEffect(()=> {
@@ -55,7 +55,7 @@ const Content = (props) => {
 				setPeople(storedResources.people)
 			} else {
 				setWater(100)
-				setFood(200)
+				setFood(100)
 				setPeople(100)
 			}
 
@@ -63,8 +63,22 @@ const Content = (props) => {
 			// Set the default values
 			setBuildings(defaultBuildings)
 		}
+		let tempWaterThres = water * 2
+		let tempFoodThres = food * 2
+		let tempPplThres = people * 2
+		setWaterThreshold(tempWaterThres)
+		setFoodThreshold(tempFoodThres)
+		setPeopleThreshold(tempPplThres)
 	},[])
-
+	function handleResetButton(){
+		if(useLocalStorage){
+			localStorage.clear()
+			setBuildings(defaultBuildings)
+			setWater(100)
+			setFood(100)
+			setPeople(100)
+		}
+	}
 	function storeLocalState() {
 		if (useLocalStorage) {
 			localStorage.setItem("buildings", JSON.stringify(buildings) )
@@ -74,7 +88,7 @@ const Content = (props) => {
 	
 	function addNewBuildingToLot(type,lot) {
 		let currentBuildings = buildings
-		let newBuilding = {type:type, level:1, lot:lot, amount:0}
+		let newBuilding = {type:type, level:1, lot:lot, amount:0, timer:15}
 		currentBuildings[lot] = newBuilding
 		setBuildings(currentBuildings)
 		storeLocalState()
@@ -96,12 +110,20 @@ const Content = (props) => {
 		setBuildings(currentBuildings)
 		storeLocalState()
 	}
+	function updateTimer(lot, timer) {
+		let currentBuildings = buildings
+		let currentBuilding = buildings[lot]
+		currentBuilding.timer = timer
+		currentBuildings[lot] = currentBuilding
+		setBuildings(currentBuildings)
+		storeLocalState()
+	}
 
 	return (
 		<GameSpace water={water} food={food} people={people} 
-		setWater={setWater} setFood={setFood} setPeople={setPeople} 
+		setWater={setWater} setFood={setFood} setPeople={setPeople} updateTimer={updateTimer}
 		addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} 
-		updateBuildingAmount={updateBuildingAmount} buildings={buildings} 
+		updateBuildingAmount={updateBuildingAmount} buildings={buildings} reset={handleResetButton}
 		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} 
 		waterThreshold={waterThreshold} foodThreshold={foodThreshold} peopleThreshold={peopleThreshold} 
 		setWaterThreshold={setWaterThreshold} setFoodThreshold={setFoodThreshold} setPeopleThreshold={setPeopleThreshold} />
