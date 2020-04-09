@@ -42,6 +42,10 @@ func main() {
 	// serve static files first
 	r.Use(static.Serve("/", static.LocalFile("./build", true)))
 
+	r.POST("/api/signup", controllers.SignUp)
+	r.POST("/api/checknick", controllers.CheckForNickname)
+	r.POST("/api/stockpile", controllers.Stockpile)
+
 	r.GET("/users", controllers.FindUsers)
 
 	r.GET("/test", func(c *gin.Context) {
