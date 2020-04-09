@@ -42,7 +42,8 @@ func main() {
 
 	r.POST("/api/signup", controllers.SignUp)
 	r.POST("/api/checknick", controllers.CheckForNickname)
-	r.POST("/api/stockpile", controllers.GetUserStockpile)
+	r.POST("/api/save", controllers.SetUserState)
+	r.POST("/api/load", controllers.GetUserState)
 
 	r.GET("/users", controllers.FindUsers)
 
