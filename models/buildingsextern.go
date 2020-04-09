@@ -1,14 +1,14 @@
 package models
 
 type SaveBuildings struct {
-	Buildings Buildings `json:"buildings"`
+	Buildings MultiBuildings `json:"buildings"`
 }
 
-type Buildings struct {
-	Building []Building `json:"building"`
+type MultiBuildings struct {
+	Building []SingleBuilding `json:"building"`
 }
 
-type Building struct {
+type SingleBuilding struct {
 	Type   string `json:"type"`
 	Level  string `json:"level"`
 	Lot    string `json:"lot"`

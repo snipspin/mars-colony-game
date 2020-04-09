@@ -46,9 +46,17 @@ func SignUp(c *gin.Context) {
 	db.Create(&newStockpile)
 
 	// create new buildings
+	newBuildings := [3]models.Building{}
+	setNewBuilding("People", "0", &newBuildings[0], userCreated)
+	setNewBuilding("Water", "1", &newBuildings[1], userCreated)
+	setNewBuilding("Food", "2", &newBuildings[2], userCreated)
+
+	for _, cb := range newBuildings {
+		db.Create(&cb)
+	}
 
 	// respond with user created, the stockpile and default buildings
-	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile)})
+	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings})
 	return
 }
 
@@ -71,4 +79,13 @@ func CheckForNickname(c *gin.Context) {
 	}
 	// check if there is a user with that nickname and respond
 	c.JSON(http.StatusOK, gin.H{"nickname": json.Nickname, "exists": UserExists(db, json.Nickname)})
+}
+
+func setNewBuilding(bType string, bLot string, b *models.Building, u *models.User) {
+	b.UserID = u.ID
+	b.Type = bType
+	b.Level = "1"
+	b.Lot = bLot
+	b.Amount = "0"
+	b.Timer = "0"
 }
