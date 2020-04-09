@@ -5,9 +5,8 @@ import (
 )
 
 type Stockpile struct {
-	ID     uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	UserID uint32 `gorm:"ForeignKey:id"  json:"user_id"`
-	// User      User
+	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	UserID    uint32    `gorm:"ForeignKey:id"  json:"user_id"`
 	Water     string    `gorm:"size:100;not null;default:'100'" json:"water"`
 	Food      string    `gorm:"size:100;not null;default:'100'" json:"food"`
 	People    string    `gorm:"size:100;not null;default:'100'" json:"people"`
