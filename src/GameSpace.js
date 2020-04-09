@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import {Route, Switch, Redirect} from 'react-router-dom'
-import ResourceBar from './ResourceBar'
 import ActiveBuildings from './ActiveBuildings'
-import BuildingCell from './BuildingCell'
 import LotsOverview from './LotsOverview'
+import SignUpComp from './SignUpComp'
 const GameSpace = (props) => {
 
 
@@ -11,8 +10,8 @@ const GameSpace = (props) => {
 	return (
 		//top bar resource info
 		<div>
-			<ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
 			<Switch>
+				<Route path='/signup' component={()=> <SignUpComp setUser={setUser} signup={props.signup} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
 				<Route path='/lots' component={() => 
 					<LotsOverview water={props.water} food={props.food} people={props.people}
 						setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} 

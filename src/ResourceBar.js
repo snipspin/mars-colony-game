@@ -4,8 +4,12 @@ import AccessibilityNewOutlinedIcon from '@material-ui/icons/AccessibilityNewOut
 import EcoIcon from '@material-ui/icons/Eco'
 import EcoOutlinedIcon from '@material-ui/icons/EcoOutlined'
 import LocalDrinkOutlinedIcon from '@material-ui/icons/LocalDrinkOutlined'
+import {Link as RouterLink} from 'react-router-dom'
 import './App.css'
 const ResourceBar = (props) => {
+	const LinkBehaviorSignUp = React.forwardRef((props, ref) => (
+		<RouterLink ref={ref} to="/signup" {...props} />
+	))
 	return (
 		<Grid
 			container
@@ -15,6 +19,11 @@ const ResourceBar = (props) => {
 		>
 			<Grid item xs={12}>
 				<h2 style={{"fontWeight":"normal"}}>Marsian Terraforming</h2>
+			</Grid>
+			<Grid item xs={12}>
+				<Button variant="outlined" component={LinkBehaviorSignUp}>
+					Sign Up
+				</Button>
 			</Grid>
 			<Grid item xs={12}>
 				<Button variant="outlined" onClick={() => props.reset()}>

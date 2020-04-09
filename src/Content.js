@@ -3,9 +3,12 @@ import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
 import {Button} from '@material-ui/core'
 const Content = (props) => {
+	const [signedIn, setSignedIn] = useState(false)
+	const [user, setUser] = useState('')
 	let [water, setWater] = useState(100)
 	let [food, setFood] = useState(100)
 	let [people, setPeople] = useState(100)
+	const [signup, setSignup] = useState(false)
 	const [waterThreshold, setWaterThreshold] = useState(0)
   	const [foodThreshold, setFoodThreshold] = useState(0)
   	const [peopleThreshold, setPeopleThreshold] = useState(0)
@@ -14,7 +17,6 @@ const Content = (props) => {
 	const [buildings, setBuildings] = useState([])
 	const [worldSize, setWorldSize] = useState(9)
 	const [useLocalStorage, setUseLocalStorage] = useState(false)
-
 	const defaultBuildings = 
 	[
 		{type:"empty", level:0, lot:0, amount:0, timer:15},
@@ -33,8 +35,13 @@ const Content = (props) => {
 			let resources = {water: water, food: food, people: people}
 			localStorage.setItem("resources", JSON.stringify(resources) )
 		}
-	},[water, food, people])
-
+	},[water, food, people, useLocalStorage])
+	useEffect(()=> {
+		if(useLocalStorage) {
+			let userObj = {user: user}
+			localStorage.setItem("user", JSON.stringify(userObj))
+		}
+	}, [user])
 		// const [activeContent, setActiveContent] = useState('active')
 	useEffect(() => {		
 		if (typeof(Storage) !== "undefined") {
@@ -93,7 +100,6 @@ const Content = (props) => {
 		setBuildings(currentBuildings)
 		storeLocalState()
 	}
-
 	function upgradeBuildingInLot(lot, level) {
 		let currentBuildings = buildings
 		let currentBuilding = buildings[lot]
@@ -120,7 +126,9 @@ const Content = (props) => {
 	}
 
 	return (
-		<GameSpace water={water} food={food} people={people} 
+		<GameSpace 
+		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn}
+		water={water} food={food} people={people} setUser={setUser}
 		setWater={setWater} setFood={setFood} setPeople={setPeople} updateTimer={updateTimer}
 		addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} 
 		updateBuildingAmount={updateBuildingAmount} buildings={buildings} reset={handleResetButton}
