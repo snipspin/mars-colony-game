@@ -155,7 +155,7 @@ const LotsOverview = (props) => {
 
   return (
     <Box style={{"display":"flex","justifyContent":"center","alignItems":"center"}}>
-    <Box style={{"backgroundColor":"rgba(255,255,255,.75)",  "marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "minWidth":"450px", "width":"50%", "height":"85%"}}>
+    <Box style={{"backgroundColor":"rgba(255,255,255,.75)", "maxWidth":"100%", "marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "minWidth":"450px", "width":"50%", "height":"85%"}}>
       <ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
       <Grid
         container
