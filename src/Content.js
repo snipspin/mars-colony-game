@@ -85,7 +85,7 @@ const Content = (props) => {
 		let data = {
 			user: username
 		}
-	    fetch(`http://localhost:8080/api/load`, {
+	    fetch(`/api/load`, {
 	            method: 'POST',
 	            body: JSON.stringify(data),
 	            headers: {
@@ -158,7 +158,7 @@ const Content = (props) => {
 			}
 			let jsonData = JSON.stringify(data)
 			setData(stringBuildings)
-	        fetch(`http://localhost:8080/api/save`, {
+	        fetch(`/api/save`, {
 	            method: 'POST',
 	            body: jsonData,
 	            headers: {

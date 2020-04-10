@@ -53,7 +53,7 @@ const SignUpCom = (props) => {
             user,
             password
         }
-        fetch(`http://localhost:8080/api/signup`, {
+        fetch(`/api/signup`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
