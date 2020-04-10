@@ -2,14 +2,20 @@ import React, {useState} from 'react'
 import LotsCell from './LotsCell'
 import {Box, Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
 import {buildings as buildingsFromDef} from './buildingsDef'
-import { useHistory, Redirect } from 'react-router-dom'
+import { useHistory, Redirect, Link as RouterLink } from 'react-router-dom'
 import ResourceBar from './ResourceBar'
+import AddNewLots from './AddNewLots'
 /*
 props :
   worldSize
   worldLots
   addNewBuildingToLot(type,lot)
 */
+
+const LinkBehavior = React.forwardRef((props, ref) => (
+	<RouterLink ref={ref} to="/" {...props} />
+))
+
 function getModalStyle() {
   const top = 50
   const left = 50
@@ -152,36 +158,41 @@ const LotsOverview = (props) => {
       }
     })
   }
-
+  // "width":"100%", "height":"100%", 
   return (
     <Box style={{"display":"flex","justifyContent":"center","alignItems":"center"}}>
-    <Box style={{"backgroundColor":"rgba(255,255,255,.75)", "maxWidth":"100%", "marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "minWidth":"450px", "width":"50%", "height":"85%"}}>
+      <Box style={{"backgroundColor":"rgba(255,255,255,.75)", "maxWidth":"100%", "marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "minWidth":"450px", "width":"50%", "height":"85%"}}>
       <ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        alignContent="center"
-        spacing={3}
-        style={{"maxWidth": "90vw", "margin":"0 auto", "minWidth":"50px", "marginBottom":"100px"}}
-      >
-       {renderWorld()}
-        <Grid style={{"border": "2px solid grey", "height":"100%", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item xs={3}>
-          <ButtonBase style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "textAlign":"center"}} focusRipple onClick={()=>setRedirect(true)}>
-            <span style={{"height": "100%", "fontSize": "1.5em"}}>Back To Main View</span>
-          </ButtonBase>
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          alignContent="center"
+          spacing={3}
+          style={{"maxWidth": "90vw", "margin":"0 auto", "minWidth":"50px", "marginBottom":"100px"}}
+        >
+          <Grid style={{"border": "2px solid grey", "min-height":"5vh", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item lg={12}>
+            <ButtonBase  style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "textAlign":"center"}} focusRipple component={LinkBehavior}> 
+              <Box style={{"width":"100%", "height":"100%", "textAlign":"center"}}>Back To Main View</Box>
+            </ButtonBase>
+          </Grid>
+          {renderWorld()}
+          <Grid item lg={12} style={{"border": "2px dashed grey", "margin": "5px 0", "borderRadius": "10px", "maxWidth":"400px"}}>
+            <ButtonBase  style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "textAlign":"center"}} focusRipple onClick={()=>props.addLots()}> 
+            	<AddNewLots />
+            </ButtonBase>
+		  	  </Grid>
         </Grid>
-      </Grid>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {body}
-      </Modal>
-      {redirect?<Redirect to='/active' />:''}
-    </Box>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+        {redirect?<Redirect to='/active' />:''}
+      </Box>
     </Box>
   )
 } 
