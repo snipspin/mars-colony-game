@@ -9,21 +9,49 @@ import (
 )
 
 func GetUserState(c *gin.Context) {
-	newMultiBuildings := models.MultiBuildings{Building: []models.SingleBuilding{
-		models.SingleBuilding{Type: "People", Level: "1", Lot: "0", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Water", Level: "1", Lot: "1", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Food", Level: "1", Lot: "2", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Food", Level: "1", Lot: "3", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Water", Level: "1", Lot: "4", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Empty", Level: "0", Lot: "5", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Empty", Level: "0", Lot: "6", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Empty", Level: "0", Lot: "7", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Empty", Level: "0", Lot: "8", Amount: "0", Timer: "0"},
-		models.SingleBuilding{Type: "Empty", Level: "0", Lot: "9", Amount: "0", Timer: "0"},
-	}}
+	db := c.MustGet("db").(*gorm.DB)
+	json := models.LoadUserState{}
 
-	emptyUserState := models.SaveUserState{Buildings: newMultiBuildings}
-	c.JSON(http.StatusOK, gin.H{"data": emptyUserState})
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// get the user record
+	userRecord := models.User{}
+	if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// get the users resources
+	userResources := models.Stockpile{}
+	if err := db.Where("user_id = ?", userRecord.ID).First(&userResources).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error3": err.Error()})
+		return
+	}
+	// get the users buildings
+	userBuildings := []models.Building{}
+	if err := db.Where("user_id = ?", userRecord.ID).Find(&userBuildings).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error4": err.Error()})
+		return
+	}
+
+	// newMultiBuildings := models.MultiBuildings{Building: []models.SingleBuilding{
+	// 	models.SingleBuilding{Type: "People", Level: "1", Lot: "0", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Water", Level: "1", Lot: "1", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Food", Level: "1", Lot: "2", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Food", Level: "1", Lot: "3", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Water", Level: "1", Lot: "4", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "5", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "6", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "7", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "8", Amount: "0", Timer: "0"},
+	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "9", Amount: "0", Timer: "0"},
+	// }}
+
+	// emptyUserState := models.SaveUserState{Buildings: newMultiBuildings}
+	c.JSON(http.StatusOK, gin.H{"user": userRecord.Nickname, "Resources": userResources, "Buildings": userBuildings})
 }
 
 func SetUserState(c *gin.Context) {
