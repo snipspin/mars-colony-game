@@ -15,3 +15,7 @@ type SaveUserState struct {
 	Resources Resources
 	Buildings MultiBuildings
 }
+
+type LoadUserState struct {
+	Nickname string `form:"user" json:"user" xml:"user"  binding:"required"`
+}

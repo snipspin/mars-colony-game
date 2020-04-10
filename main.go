@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/contrib/static"
@@ -44,37 +42,6 @@ func main() {
 	r.POST("/api/checknick", controllers.CheckForNickname)
 	r.POST("/api/save", controllers.SetUserState)
 	r.POST("/api/load", controllers.GetUserState)
-
-	r.GET("/users", controllers.FindUsers)
-
-	r.GET("/test", func(c *gin.Context) {
-		// create a new user
-		userRecord := models.User{}
-		var newUser = models.User{Nickname: "TestRouteUser", Email: "testrouteuser@example.com", Password: "3yV-HyCPHEf9CYPZWELUy3eoaWTMrb9K"}
-		var newStockpile = models.Stockpile{}
-		result := conn.NewRecord(&newUser)
-		if result {
-			conn.Create(&newUser)
-			result = conn.NewRecord(&newUser)
-			if !result {
-				// create a new stockpile for that user
-				conn.Where("nickname = ?", newUser.Nickname).First(&userRecord)
-				// store that record in a variable
-				newStockpile = models.Stockpile{UserID: userRecord.ID, Water: "100", Food: "100", People: "100"}
-				conn.Create(&newStockpile)
-				result = conn.NewRecord(&newStockpile)
-				// delete the records
-				if result {
-					fmt.Println("Stockpile not created")
-				} else {
-					conn.Where("user_id = ?", newUser.ID).Delete(&models.Stockpile{})
-				}
-				conn.Where("nickname = ?", newUser.Nickname).Delete(&models.User{})
-			}
-		}
-		// respond with the users data and stockpile
-		c.JSON(http.StatusOK, gin.H{"stockpile": newStockpile, "user": userRecord})
-	})
 
 	r.Run(":" + port)
 }
