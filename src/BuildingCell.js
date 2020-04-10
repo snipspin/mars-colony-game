@@ -145,7 +145,7 @@ const BuildingCell = (props) => {
 	const getBuilding = () => {
 		if(props.type === "Food") {
 			return (
-				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
+				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "100%"}}>
 					{GreenMemoHarvest}
 					<span className={resourceType}>{localResource}</span>
 					{GreenMemoUpgrade}
@@ -154,7 +154,7 @@ const BuildingCell = (props) => {
 			)
 		} else if(props.type === "Water") {
 			return (
-				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
+				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "100%"}}>
 					{BlueMemoHarvest}
 					<span className={resourceType}>{localResource}</span>
 					{BlueMemoUpgrade}			
@@ -163,7 +163,7 @@ const BuildingCell = (props) => {
 			)
 		} else if(props.type === "People") {
 			return (
-				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
+				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "100%"}}>
 					{RedMemoHarvest}
 					<span className={resourceType}>{localResource}</span>
 					{RedMemoUpgrade}
@@ -175,7 +175,7 @@ const BuildingCell = (props) => {
 	}
 	
 	return (
-		<Box style={{"width":"300px"}}>
+		<Box style={{"width":"100%"}}>
 			{getBuilding}
 		</Box>
 	)

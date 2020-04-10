@@ -4,11 +4,11 @@ import Content from './Content'
 import './App.css'
 function App() {
 	return (
-		<BrowserRouter>
-			<div className="App-body">
-				<Content />
-			</div>
-   		</BrowserRouter>
+		<div className="App-body">
+			<BrowserRouter>		
+					<Content />
+   			</BrowserRouter>
+   		</div>
   	)
 }
 
