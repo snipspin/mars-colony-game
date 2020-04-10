@@ -63,7 +63,7 @@ const SignUpCom = (props) => {
         .then ((response) => {
             response.json().then(result => {
                 if(response.ok) {
-                    props.updateUser(result.user)
+                    props.updateUser(result.user["nickname"])
                     props.setSignedIn(true)
                 //props.updateUser(result.token)
                 } else {
