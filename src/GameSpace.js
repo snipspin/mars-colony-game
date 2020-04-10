@@ -20,8 +20,8 @@ const GameSpace = (props) => {
 						setWaterThreshold={props.setWaterThreshold} setFoodThreshold={props.setFoodThreshold} setPeopleThreshold={props.setPeopleThreshold}
 					/>} 
 				/>
-				<Route path='/' component={() => <ActiveBuildings updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
-				<Route path='/active' component={() => <ActiveBuildings updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/' component={() => <ActiveBuildings signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/active' component={() => <ActiveBuildings signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
 			</Switch>
 			
 			

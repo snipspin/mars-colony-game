@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import LotsCell from './LotsCell'
-import {Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
+import {Box, Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
 import {buildings as buildingsFromDef} from './buildingsDef'
 import { useHistory, Redirect } from 'react-router-dom'
 import ResourceBar from './ResourceBar'
@@ -154,7 +154,7 @@ const LotsOverview = (props) => {
   }
 
   return (
-    <div>
+    <Box style={{"border":"2px black solid", "boderRadius":"10px"}}>
       <ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
       <Grid
         container
@@ -180,7 +180,7 @@ const LotsOverview = (props) => {
         {body}
       </Modal>
       {redirect?<Redirect to='/active' />:''}
-    </div>
+    </Box>
   )
 } 
 

@@ -35,8 +35,9 @@ const ActiveBuildings = (props) => {
 		}
 	}
 	return (
-		<div>
-		<ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
+		<Box style={{"display":"flex","justifyContent":"center","alignItems":"center"}}>
+		<Box style={{"marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "width":"50%", "height":"75%"}}>
+		<ResourceBar loadGame={props.loadGame} saveGame={props.saveGame} signedIn={props.signedIn} water={props.water} food={props.food} people={props.people} reset={props.reset} />
 		<Grid
 			container
 			direction="column"
@@ -53,7 +54,8 @@ const ActiveBuildings = (props) => {
             	</ButtonBase>
 			</Grid>
 		</Grid>
-		</div>
+		</Box>
+		</Box>
 	)
 
 }

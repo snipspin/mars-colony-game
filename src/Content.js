@@ -3,6 +3,7 @@ import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
 import {Button} from '@material-ui/core'
 const Content = (props) => {
+	let [message, setMessage] = useState('')
 	const [signedIn, setSignedIn] = useState(false)
 	const [user, setUser] = useState('')
 	let [water, setWater] = useState(100)
@@ -77,6 +78,84 @@ const Content = (props) => {
 		setFoodThreshold(tempFoodThres)
 		setPeopleThreshold(tempPplThres)
 	},[])
+	function loadGame(username) {
+
+	    fetch(`http://localhost:8080/api/save`, {
+	            method: 'POST',
+	            body: JSON.stringify(username),
+	            headers: {
+	                'Content-Type': 'application/json'
+	            }
+	        })
+	    .then ((response) => {
+	        response.json().then(result => {
+	            if(response.ok) {
+	               	let data = result.data
+	                let dataUser = data.user
+	                let dataResources = data.Resources
+	                let dataBuildings = data.buildings
+	                if(useLocalStorage){
+	                	localStorage.setItem("user", dataUser)
+	                	localStorage.setItem("resources", dataResources)
+	                	localStorage.setItem("buildings", dataBuildings)
+	                }
+	                updateUser(result.user)
+	                setSignedIn(true)
+	                setMessage("User data was loaded!")
+	                //props.updateUser(result.token)
+	            } else {
+	                setMessage(`${response.status} ${response.statusText}: ${result.message}`)
+	            }
+	        }).catch( (err) => console.log(err))
+	    }).catch( (err) => {
+	        console.log('Error', err)
+	        setMessage(`Error: ${err.toString()}`)
+	    })
+
+	}
+	function saveGame() {
+		let success = false
+		if(useLocalStorage && signedIn){
+			let fulluser = localStorage.getItem("user")
+			let user = fulluser["nickname"]
+			let tempBuildings = localStorage.getItem("buildings")
+			let tempResources = localStorage.getItem("resources")
+			let tempWater = tempResources["water"]
+			let tempFood = tempResources["food"]
+			let tempPeople = tempResources["people"]
+			let data = {
+				user: user,
+				Resources: {
+					water: tempWater,
+					food: tempFood,
+					people: tempPeople
+				},
+				Buidlings:tempBuildings
+			}
+	        fetch(`http://localhost:8080/api/save`, {
+	            method: 'POST',
+	            body: JSON.stringify(data),
+	            headers: {
+	                'Content-Type': 'application/json'
+	            }
+	        })
+	        .then ((response) => {
+	            response.json().then(result => {
+	                if(response.ok) {
+	                    setMessage("User data was saved!")
+	                    success = true
+	                //props.updateUser(result.token)
+	                } else {
+	                    setMessage(`${response.status} ${response.statusText}: ${result.message}`)
+	                }
+	            }).catch( (err) => console.log(err))
+	        }).catch( (err) => {
+	            console.log('Error', err)
+	            setMessage(`Error: ${err.toString()}`)
+	        })
+		}
+		return(success)
+	}
 	function handleResetButton(){
 		if(useLocalStorage){
 			localStorage.clear()
@@ -86,9 +165,9 @@ const Content = (props) => {
 			setPeople(100)
 		}
 	}
-	function updateUser(username) {
+	function updateUser(userInfo) {
 		if(useLocalStorage) {
-			localStorage.setItem("user", JSON.stringify(username))
+			localStorage.setItem("user", JSON.stringify(userInfo))
 			let storedUser = localStorage.getItem("user")
 			setUser(storedUser)
 		}
@@ -133,7 +212,8 @@ const Content = (props) => {
 	}
 
 	return (
-		<GameSpace 
+		<GameSpace
+		saveGame={saveGame} loadGame={loadGame} 
 		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn}
 		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}
 		setWater={setWater} setFood={setFood} setPeople={setPeople} updateTimer={updateTimer}
