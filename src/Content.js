@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
-import {Button} from '@material-ui/core'
+import {Button, ClickAwayListener} from '@material-ui/core'
+
 const Content = (props) => {
 	const [message, setMessage] = useState('')
 	const [signedIn, setSignedIn] = useState(false)
@@ -11,9 +12,9 @@ const Content = (props) => {
 	const [people, setPeople] = useState(100)
 	const [signup, setSignup] = useState(false)
 	const [waterThreshold, setWaterThreshold] = useState(0)
-  	const [foodThreshold, setFoodThreshold] = useState(0)
-  	const [peopleThreshold, setPeopleThreshold] = useState(0)
-  	const [data, setData] = useState({})
+  const [foodThreshold, setFoodThreshold] = useState(0)
+  const [peopleThreshold, setPeopleThreshold] = useState(0)
+  const [data, setData] = useState({})
 
 		// Get the initial set of buildings owned by player
 	const [buildings, setBuildings] = useState([])
@@ -244,6 +245,13 @@ const Content = (props) => {
 		storeLocalState()
 	}
 
+	function AddThreeEmptyLots() {
+		let result = createEmptyBuildingsFromLot(3,buildings.length-1)
+		let newBldgs = [...buildings, ...result]
+		setBuildings(newBldgs)
+		console.log(newBldgs)
+	}
+
 	return (
 		<GameSpace
 		saveGame={saveGame} loadGame={loadGame} 
@@ -254,7 +262,23 @@ const Content = (props) => {
 		updateBuildingAmount={updateBuildingAmount} buildings={buildings} reset={handleResetButton}
 		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize}
 		waterThreshold={waterThreshold} foodThreshold={foodThreshold} peopleThreshold={peopleThreshold} 
-		setWaterThreshold={setWaterThreshold} setFoodThreshold={setFoodThreshold} setPeopleThreshold={setPeopleThreshold} />
+		setWaterThreshold={setWaterThreshold} setFoodThreshold={setFoodThreshold} setPeopleThreshold={setPeopleThreshold}
+		addLots={AddThreeEmptyLots} />
 	)
 }
 export default Content
+
+// creates num * buildings starting with lot
+// createEmptyBuildingsFromLot(3, 9) 
+// returns 3 empty buildings starting from lot 9
+function createEmptyBuildingsFromLot(num, startLot) {
+	let bldgs = []
+	for(let index = 0; index < num; index++, startLot++) {
+		bldgs[index] = createEmptyBuildingAtLot(startLot)
+	}
+	return bldgs
+}
+
+function createEmptyBuildingAtLot(lot) {
+	return {type:"empty", level:0, lot:lot, amount:0, timer:0}
+}
