@@ -37,20 +37,6 @@ func GetUserState(c *gin.Context) {
 		return
 	}
 
-	// newMultiBuildings := models.MultiBuildings{Building: []models.SingleBuilding{
-	// 	models.SingleBuilding{Type: "People", Level: "1", Lot: "0", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Water", Level: "1", Lot: "1", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Food", Level: "1", Lot: "2", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Food", Level: "1", Lot: "3", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Water", Level: "1", Lot: "4", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "5", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "6", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "7", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "8", Amount: "0", Timer: "0"},
-	// 	models.SingleBuilding{Type: "Empty", Level: "0", Lot: "9", Amount: "0", Timer: "0"},
-	// }}
-
-	// emptyUserState := models.SaveUserState{Buildings: newMultiBuildings}
 	c.JSON(http.StatusOK, gin.H{"user": userRecord.Nickname, "Resources": userResources, "Buildings": userBuildings})
 }
 
@@ -65,23 +51,23 @@ func SetUserState(c *gin.Context) {
 
 	// take the user from json and check if it exists, return an error if it doesn't
 	userRecord := models.User{}
-	db.Where("nickname = ?", json.Nickname).First(&userRecord)
-	if userRecord.ID == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User does not exist"})
+	if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	// take the resources from json and update the stockpile table
-	SaveResources(db, json.Resources, userRecord)
+	saveResources(db, json.Resources, userRecord)
+
 	// take the buildings from json and store them
 	buildingRecord := models.Building{}
 	buildingRecord.UserID = userRecord.ID
 
-	SaveBuildings(db, json.Buildings.Building, userRecord)
-	c.JSON(http.StatusOK, gin.H{"jb": len(json.Buildings.Building), "u": json.Nickname, "r": json.Resources, "f": json.Resources.Food})
+	saveBuildings(db, json.Buildings.Building, userRecord)
+	c.JSON(http.StatusOK, gin.H{"status": "success"})
 	return
 }
 
-func SaveResources(db *gorm.DB, r models.Resources, u models.User) error {
+func saveResources(db *gorm.DB, r models.Resources, u models.User) error {
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -103,7 +89,7 @@ func SaveResources(db *gorm.DB, r models.Resources, u models.User) error {
 	return tx.Commit().Error
 }
 
-func SaveBuildings(db *gorm.DB, b []models.SingleBuilding, u models.User) error {
+func saveBuildings(db *gorm.DB, b []models.SingleBuilding, u models.User) error {
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -115,7 +101,7 @@ func SaveBuildings(db *gorm.DB, b []models.SingleBuilding, u models.User) error 
 		return err
 	}
 
-	if err := tx.Delete(&models.Building{UserID: u.ID}).Error; err != nil {
+	if err := tx.Where("user_id = ?", u.ID).Delete(&models.Building{UserID: u.ID}).Error; err != nil {
 		tx.Rollback()
 		return err
 	}

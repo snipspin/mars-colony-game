@@ -9,13 +9,7 @@ import (
 	"github.com/snipspin/mars-colony-game/models"
 )
 
-func FindUsers(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	var users []models.User
-	db.Find(&users)
-	c.JSON(http.StatusOK, gin.H{"data": users})
-}
-
+// SignUp handles /api/signup route
 func SignUp(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var json = models.Login{}
