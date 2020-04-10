@@ -3,12 +3,12 @@ import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
 import {Button} from '@material-ui/core'
 const Content = (props) => {
-	let [message, setMessage] = useState('')
+	const [message, setMessage] = useState('')
 	const [signedIn, setSignedIn] = useState(false)
 	const [user, setUser] = useState('')
-	let [water, setWater] = useState(100)
-	let [food, setFood] = useState(100)
-	let [people, setPeople] = useState(100)
+	const [water, setWater] = useState(100)
+	const [food, setFood] = useState(100)
+	const [people, setPeople] = useState(100)
 	const [signup, setSignup] = useState(false)
 	const [waterThreshold, setWaterThreshold] = useState(0)
   	const [foodThreshold, setFoodThreshold] = useState(0)
@@ -82,10 +82,12 @@ const Content = (props) => {
 		setPeopleThreshold(tempPplThres)
 	},[])
 	function loadGame(username) {
-
-	    fetch(`http://localhost:8080/api/save`, {
+		let data = {
+			user: username
+		}
+	    fetch(`http://localhost:8080/api/load`, {
 	            method: 'POST',
-	            body: JSON.stringify(username),
+	            body: JSON.stringify(data),
 	            headers: {
 	                'Content-Type': 'application/json'
 	            }
@@ -93,15 +95,25 @@ const Content = (props) => {
 	    .then ((response) => {
 	        response.json().then(result => {
 	            if(response.ok) {
-	               	let data = result.data
-	                let dataUser = data.user
-	                let dataResources = data.Resources
-	                let dataBuildings = data.buildings
-	                if(useLocalStorage){
-	                	localStorage.setItem("user", dataUser)
-	                	localStorage.setItem("resources", dataResources)
-	                	localStorage.setItem("buildings", dataBuildings)
-	                }
+	            	setData(result)
+	                let resultUser = result.user
+	                let resultResources = result.Resources
+	                let intWater =  parseInt(resultResources.water)
+	                let intFood = parseInt(resultResources.food)
+	                let intPeople = parseInt(resultResources.people)
+	                setWater(intWater)
+	                setFood(intFood)
+	                setPeople(intPeople)
+	                let resultBuildings = result.Buildings
+	                let intBuildings = resultBuildings.map((curr) => {
+	                	curr.lot = parseInt(curr.lot)
+	                	curr.level = parseInt(curr.level)
+	                	curr.amount = parseInt(curr.amount)
+	                	curr.timer = parseInt(curr.timer)
+	                	return curr
+	                })
+	                setBuildings(intBuildings)
+					updateUser(resultUser)
 	                setSignedIn(true)
 	                setMessage("User data was loaded!")
 	                //props.updateUser(result.token)
@@ -120,20 +132,21 @@ const Content = (props) => {
 		if(useLocalStorage && signedIn){
 			let tempUser = user
 			let tempBuildings = buildings
-			let stringBuildings = tempBuildings.map((building)=> {
-				building.lot = building.lot.toString()
-				building.amount = building.amount.toString()
-				building.level = building.level.toString()
-				building.timer = building.timer.toString()
-				return building
+			let stringBuildings = tempBuildings.map((curr)=> {
+				curr.lot = curr.lot.toString()
+				curr.amount = curr.amount.toString()
+				curr.level = curr.level.toString()
+				curr.timer = curr.timer.toString()
+				return curr
 			})
-			let tempWater = water
-			let tempFood = food
-			let tempPeople = people
+			let tempWater = water.toString()
+			let tempFood = food.toString()
+			let tempPeople = people.toString()
+
 			let tempResources = {
-				water: tempWater.toString(),
-				food: tempFood.toString(),
-				people: tempPeople.toString()
+				water: tempWater,
+				food: tempFood,
+				people: tempPeople
 			}
 
 			let data = {
@@ -166,6 +179,13 @@ const Content = (props) => {
 	            console.log('Error', err)
 	            setMessage(`Error: ${err.toString()}`)
 	        })
+	        let revertBuildings = buildings.map((curr) => {
+				curr.lot = parseInt(curr.lot)
+				curr.amount = parseInt(curr.amount)
+				curr.level = parseInt(curr.level)
+				curr.timer = parseInt(curr.timer)
+				return curr
+			})
 		}
 		return(success)
 	}

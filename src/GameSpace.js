@@ -13,7 +13,7 @@ const GameSpace = (props) => {
 			<Switch>
 				<Route path='/signup' component={()=> <SignUpComp updateUser={props.updateUser} setUser={props.setUser} signup={props.signup} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
 				<Route path='/lots' component={() => 
-					<LotsOverview water={props.water} food={props.food} people={props.people}
+					<LotsOverview water={props.water} food={props.food} people={props.people} signedIn={props.signedIn}
 						setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} 
 						worldSize={props.worldSize} worldLots={props.buildings} addNewBuildingToLot={props.addNewBuildingToLot} 
 						waterThreshold={props.waterThreshold} foodThreshold={props.foodThreshold} peopleThreshold={props.peopleThreshold}
