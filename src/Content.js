@@ -3,16 +3,17 @@ import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
 import {Button} from '@material-ui/core'
 const Content = (props) => {
-	let [message, setMessage] = useState('')
+	const [message, setMessage] = useState('')
 	const [signedIn, setSignedIn] = useState(false)
 	const [user, setUser] = useState('')
-	let [water, setWater] = useState(100)
-	let [food, setFood] = useState(100)
-	let [people, setPeople] = useState(100)
+	const [water, setWater] = useState(100)
+	const [food, setFood] = useState(100)
+	const [people, setPeople] = useState(100)
 	const [signup, setSignup] = useState(false)
 	const [waterThreshold, setWaterThreshold] = useState(0)
   	const [foodThreshold, setFoodThreshold] = useState(0)
   	const [peopleThreshold, setPeopleThreshold] = useState(0)
+  	const [data, setData] = useState({})
 
 		// Get the initial set of buildings owned by player
 	const [buildings, setBuildings] = useState([])
@@ -30,7 +31,9 @@ const Content = (props) => {
 		{type:"empty", level:0, lot:7, amount:0, timer:15},
 		{type:"empty", level:0, lot:8, amount:0, timer:15}, 
 	]
+	useEffect(()=> {
 
+	},[user,water,food,people,buildings])
 	useEffect(()=> {
 		if (useLocalStorage) {
 			let resources = {water: water, food: food, people: people}
@@ -79,10 +82,12 @@ const Content = (props) => {
 		setPeopleThreshold(tempPplThres)
 	},[])
 	function loadGame(username) {
-
-	    fetch(`http://localhost:8080/api/save`, {
+		let data = {
+			user: username
+		}
+	    fetch(`/api/load`, {
 	            method: 'POST',
-	            body: JSON.stringify(username),
+	            body: JSON.stringify(data),
 	            headers: {
 	                'Content-Type': 'application/json'
 	            }
@@ -90,16 +95,25 @@ const Content = (props) => {
 	    .then ((response) => {
 	        response.json().then(result => {
 	            if(response.ok) {
-	               	let data = result.data
-	                let dataUser = data.user
-	                let dataResources = data.Resources
-	                let dataBuildings = data.buildings
-	                if(useLocalStorage){
-	                	localStorage.setItem("user", dataUser)
-	                	localStorage.setItem("resources", dataResources)
-	                	localStorage.setItem("buildings", dataBuildings)
-	                }
-	                updateUser(result.user)
+	            	setData(result)
+	                let resultUser = result.user
+	                let resultResources = result.Resources
+	                let intWater =  parseInt(resultResources.water)
+	                let intFood = parseInt(resultResources.food)
+	                let intPeople = parseInt(resultResources.people)
+	                setWater(intWater)
+	                setFood(intFood)
+	                setPeople(intPeople)
+	                let resultBuildings = result.Buildings
+	                let intBuildings = resultBuildings.map((curr) => {
+	                	curr.lot = parseInt(curr.lot)
+	                	curr.level = parseInt(curr.level)
+	                	curr.amount = parseInt(curr.amount)
+	                	curr.timer = parseInt(curr.timer)
+	                	return curr
+	                })
+	                setBuildings(intBuildings)
+					updateUser(resultUser)
 	                setSignedIn(true)
 	                setMessage("User data was loaded!")
 	                //props.updateUser(result.token)
@@ -116,25 +130,37 @@ const Content = (props) => {
 	function saveGame() {
 		let success = false
 		if(useLocalStorage && signedIn){
-			let fulluser = localStorage.getItem("user")
-			let user = fulluser["nickname"]
-			let tempBuildings = localStorage.getItem("buildings")
-			let tempResources = localStorage.getItem("resources")
-			let tempWater = tempResources["water"]
-			let tempFood = tempResources["food"]
-			let tempPeople = tempResources["people"]
-			let data = {
-				user: user,
-				Resources: {
-					water: tempWater,
-					food: tempFood,
-					people: tempPeople
-				},
-				Buidlings:tempBuildings
+			let tempUser = user
+			let tempBuildings = buildings
+			let stringBuildings = tempBuildings.map((curr)=> {
+				curr.lot = curr.lot.toString()
+				curr.amount = curr.amount.toString()
+				curr.level = curr.level.toString()
+				curr.timer = curr.timer.toString()
+				return curr
+			})
+			let tempWater = water.toString()
+			let tempFood = food.toString()
+			let tempPeople = people.toString()
+
+			let tempResources = {
+				water: tempWater,
+				food: tempFood,
+				people: tempPeople
 			}
-	        fetch(`http://localhost:8080/api/save`, {
+
+			let data = {
+				user: tempUser,
+				Resources: tempResources,
+				Buildings: {
+					building: stringBuildings
+				}
+			}
+			let jsonData = JSON.stringify(data)
+			setData(stringBuildings)
+	        fetch(`/api/save`, {
 	            method: 'POST',
-	            body: JSON.stringify(data),
+	            body: jsonData,
 	            headers: {
 	                'Content-Type': 'application/json'
 	            }
@@ -153,6 +179,13 @@ const Content = (props) => {
 	            console.log('Error', err)
 	            setMessage(`Error: ${err.toString()}`)
 	        })
+	        let revertBuildings = buildings.map((curr) => {
+				curr.lot = parseInt(curr.lot)
+				curr.amount = parseInt(curr.amount)
+				curr.level = parseInt(curr.level)
+				curr.timer = parseInt(curr.timer)
+				return curr
+			})
 		}
 		return(success)
 	}
@@ -167,7 +200,7 @@ const Content = (props) => {
 	}
 	function updateUser(userInfo) {
 		if(useLocalStorage) {
-			localStorage.setItem("user", JSON.stringify(userInfo))
+			localStorage.setItem("user", userInfo)
 			let storedUser = localStorage.getItem("user")
 			setUser(storedUser)
 		}

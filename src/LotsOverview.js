@@ -154,7 +154,8 @@ const LotsOverview = (props) => {
   }
 
   return (
-    <Box style={{"border":"2px black solid", "boderRadius":"10px"}}>
+    <Box style={{"display":"flex","justifyContent":"center","alignItems":"center"}}>
+    <Box style={{"backgroundColor":"rgba(255,255,255,.75)",  "marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "minWidth":"450px", "width":"50%", "height":"85%"}}>
       <ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
       <Grid
         container
@@ -162,7 +163,7 @@ const LotsOverview = (props) => {
         alignItems="center"
         alignContent="center"
         spacing={3}
-        style={{"maxWidth": "90vw", "margin":"0 auto", "minWidth":"50px"}}
+        style={{"maxWidth": "90vw", "margin":"0 auto", "minWidth":"50px", "marginBottom":"100px"}}
       >
        {renderWorld()}
         <Grid style={{"border": "2px solid grey", "height":"100%", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item xs={3}>
@@ -180,6 +181,7 @@ const LotsOverview = (props) => {
         {body}
       </Modal>
       {redirect?<Redirect to='/active' />:''}
+    </Box>
     </Box>
   )
 } 
