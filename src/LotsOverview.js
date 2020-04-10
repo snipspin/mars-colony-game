@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
 import LotsCell from './LotsCell'
-import {Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
+import {Box, Grid, Modal, makeStyles, ButtonBase, Button} from '@material-ui/core'
 import {buildings as buildingsFromDef} from './buildingsDef'
 import { useHistory, Redirect } from 'react-router-dom'
+import ResourceBar from './ResourceBar'
 /*
 props :
   worldSize
@@ -130,19 +131,19 @@ const LotsOverview = (props) => {
         // it's some sort of building
         if(lot.type === "water") {
           return (
-            <Grid style={{"display":"flex", "justifyContent":"center","alignItems":"center", "border": "2px solid blue", "width":"100px", "height":"100px", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+            <Grid key={i} style={{"display":"flex", "justifyContent":"center","alignItems":"center", "border": "2px solid blue", "width":"100px", "height":"100px", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
               <LotsCell key={i} type={lot.type} />
             </Grid>
           )
         } else if(lot.type === "food") {
           return (
-            <Grid style={{"display":"flex", "justifyContent":"center","alignItems":"center", "height": "100px", "width":"100px", "border":"2px solid green", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+            <Grid key={i} style={{"display":"flex", "justifyContent":"center","alignItems":"center", "height": "100px", "width":"100px", "border":"2px solid green", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
               <LotsCell key={i} type={lot.type} />
             </Grid>
           )          
         } else {
           return (
-            <Grid style={{"display":"flex", "justifyContent":"center","alignItems":"center", "height": "100px", "width":"100px", "border": "2px solid red", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
+            <Grid key={i} style={{"display":"flex", "justifyContent":"center","alignItems":"center", "height": "100px", "width":"100px", "border": "2px solid red", "margin": "2px", "padding": "0", "borderRadius": "10px"}} item xs={3}>
               <LotsCell key={i} type={lot.type} />
             </Grid>
           ) 
@@ -153,7 +154,8 @@ const LotsOverview = (props) => {
   }
 
   return (
-    <div>
+    <Box style={{"border":"2px black solid", "boderRadius":"10px"}}>
+      <ResourceBar water={props.water} food={props.food} people={props.people} reset={props.reset} />
       <Grid
         container
         justify="center"
@@ -164,7 +166,7 @@ const LotsOverview = (props) => {
       >
        {renderWorld()}
         <Grid style={{"border": "2px solid grey", "height":"100%", "margin":"2px", "padding":"0", "borderRadius": "10px"}} item xs={3}>
-          <ButtonBase style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "text-align":"center"}} focusRipple onClick={()=>setRedirect(true)}>
+          <ButtonBase style={{"display":"flex", "justify":"center", "width":"100%", "height":"100%", "textAlign":"center"}} focusRipple onClick={()=>setRedirect(true)}>
             <span style={{"height": "100%", "fontSize": "1.5em"}}>Back To Main View</span>
           </ButtonBase>
         </Grid>
@@ -178,7 +180,7 @@ const LotsOverview = (props) => {
         {body}
       </Modal>
       {redirect?<Redirect to='/active' />:''}
-    </div>
+    </Box>
   )
 } 
 

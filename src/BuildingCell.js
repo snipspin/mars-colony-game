@@ -1,10 +1,14 @@
-import React, {useState, useEffect, useMemo} from 'react'
+import React, {useState, useEffect, useMemo, useCallback} from 'react'
 import {Box, Button} from '@material-ui/core'
 import {withStyles} from '@material-ui/core/styles'
 import {green, blue, red} from '@material-ui/core/colors'
+
+
+
 const BuildingCell = (props) => {
 	const [localResource, setLocalResource] = useState(props.amount)
 	const [localThreshold, setLocalThreshold]= useState(props.timer)
+	const [harvest, setHarvest] = useState(0)
 	const [increment, setIncrement] = useState(2 * props.level)
 	const [buildingLevel, setBuildingLevel] = useState(props.level)
 	const [resourceType, setResourceType] = useState('')
@@ -17,6 +21,11 @@ const BuildingCell = (props) => {
       			backgroundColor: green[200],
       			borderColor: green[300],
       			boxShadow: 'none'
+    		},
+    		'&:active': {
+    			backgroundColor: green[200],
+    			borderColor: 'green',
+    			boxShadow: '0 0 0.2rem 0.1rem rgba(50, 125, 50, .7)'
     		}
   		},
 	}))(Button)
@@ -28,6 +37,11 @@ const BuildingCell = (props) => {
       			backgroundColor: blue[200],
       			borderColor: blue[300],
       			boxShadow: 'none'
+    		},
+    		'&:active': {
+    			backgroundColor: blue[200],
+    			borderColor: 'rgba(0,0,255,1)',
+    			boxShadow: '0 0 0.2rem 0.1rem rgba(50, 50, 125, .7)'
     		}
   		},
 	}))(Button)
@@ -39,10 +53,14 @@ const BuildingCell = (props) => {
       			backgroundColor: red[200],
       			borderColor: red[300],
       			boxShadow: 'none'
+    		},
+    		'&:active': {
+    			backgroundColor: red[200],
+    			borderColor: 'rgba(255,0,0,1)',
+    			boxShadow: '0 0 0.2rem 0.1rem rgba(125, 50, 50, .7)'
     		}
   		},
 	}))(Button)
-
 //https://stackoverflow.com/questions/53395147/use-react-hook-to-implement-a-self-increment-counter
 	useEffect(() => {
 		const timeOut = setTimeout(() => {
@@ -58,62 +76,74 @@ const BuildingCell = (props) => {
 		return () => {
 			clearTimeout(timeOut)
 		}
-	},[localResource, localThreshold])
-
-	useEffect(() => {
-
-	}, [buildingLevel, increment, localThreshold])
-
-
-	
-	const clickHandler = (e) => {
+	},[localResource, localThreshold, props, increment])
+	const clickCallBack = useCallback(() => {
+		const clickHandler = () => {
+			let amount = localResource + props.resource
+			props.setResource(amount)
+			setLocalResource(0)
+			props.updateBuildingAmount(props.lot, 0)
+			let harv = harvest + 1
+			setHarvest(harv)
+		}
+		clickHandler()
+	},[localResource, harvest, props])
+/*	const clickHandler = (e) => {
 		e.preventDefault()
 		// props.onClick(localResource)
 		let amount = localResource + props.resource
 		props.setResource(amount)
 		setLocalResource(0)
 		props.updateBuildingAmount(props.lot, 0)
-	}
-	const clickUpgradeHandler = (e) => {
-		e.preventDefault()
-		let currLevel = buildingLevel + 1
-		props.upgradeBuildingInLot(props.lot, currLevel)
-		setBuildingLevel(currLevel)
-		setLocalThreshold(15)
-		props.updateTimer(props.lot, 15)
-	}
+		let harv = harvest + 1
+		setHarvest(harv)
+
+*/	
+	const clickUpgradeCallBack = useCallback(() => {
+		const clickUpgradeHandler = () => {
+			let currLevel = buildingLevel + 1
+			props.upgradeBuildingInLot(props.lot, currLevel)
+			setBuildingLevel(currLevel)
+			setLocalThreshold(15)
+			props.updateTimer(props.lot, 15)
+		}
+		clickUpgradeHandler()
+	},[props, buildingLevel])
+
 	const GreenMemoHarvest = useMemo(() => {
-		return (<GreenButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</GreenButton>)
-	},[])
+		return (<GreenButton variant="outlined" onClick={() => clickCallBack()}>Harvest</GreenButton>)
+	},[clickCallBack])
 	const BlueMemoHarvest = useMemo(() => {
-		return (<BlueButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</BlueButton>)
-	},[])
+		return (<BlueButton variant="outlined" onClick={() => clickCallBack()}>Harvest</BlueButton>)
+	},[clickCallBack])
 	const RedMemoHarvest = useMemo(() => {
-		return (<RedButton variant="outlined" onClick={(e) => clickHandler(e)}>Harvest</RedButton>)
-	},[])
+		return (<RedButton variant="outlined" onClick={() => clickCallBack()}>Harvest</RedButton>)
+	},[clickCallBack])
+
 	const GreenMemoUpgrade = useMemo(() => {
 		return(
 			localThreshold <= 0 ?
-				<GreenButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</GreenButton> :
-				<GreenButton disabled="true" variant="outlined">Upgrade in: {localThreshold}</GreenButton>						
+				<GreenButton variant="outlined" onClick={() => clickUpgradeCallBack()}>Upgrade</GreenButton> :
+				<GreenButton disabled={true} variant="outlined">Upgrade in: {localThreshold}</GreenButton>						
 		)
-	},[localThreshold])
+	},[clickUpgradeCallBack, localThreshold])
+
 	const BlueMemoUpgrade = useMemo(() => {
 		return(
 			localThreshold <= 0 ?
-				<BlueButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</BlueButton> :
-				<BlueButton disabled="true" variant="outlined">Upgrade in: {localThreshold}</BlueButton>						
+				<BlueButton variant="outlined" onClick={() => clickUpgradeCallBack()}>Upgrade</BlueButton> :
+				<BlueButton disabled={true} variant="outlined">Upgrade in: {localThreshold}</BlueButton>						
 		)
-	},[localThreshold])
+	},[clickUpgradeCallBack, localThreshold])
 	const RedMemoUpgrade = useMemo(() => {
 		return(
 			localThreshold <= 0 ?
-				<RedButton variant="outlined" onClick={(e) => clickUpgradeHandler(e)}>Upgrade</RedButton> :
-				<RedButton disabled="true" variant="outlined">Upgrade in: {localThreshold}</RedButton>						
+				<RedButton variant="outlined" onClick={() => clickUpgradeCallBack()}>Upgrade</RedButton> :
+				<RedButton disabled={true} variant="outlined">Upgrade in: {localThreshold}</RedButton>						
 		)
-	},[localThreshold])
+	},[clickUpgradeCallBack, localThreshold])
 	const getBuilding = () => {
-		if(props.type == "Food") {
+		if(props.type === "Food") {
 			return (
 				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
 					{GreenMemoHarvest}
@@ -122,7 +152,7 @@ const BuildingCell = (props) => {
 					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
 				</Box>
 			)
-		} else if(props.type == "Water") {
+		} else if(props.type === "Water") {
 			return (
 				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
 					{BlueMemoHarvest}
@@ -131,7 +161,7 @@ const BuildingCell = (props) => {
 					<span className={resourceTypeLevel}>Level: {buildingLevel}</span>
 				</Box>
 			)
-		} else if(props.type == "People") {
+		} else if(props.type === "People") {
 			return (
 				<Box style={{"display": "flex", "flexDirection": "column", "alignItems":"center", "width": "300px"}}>
 					{RedMemoHarvest}
