@@ -121,7 +121,20 @@ func SignIn(c *gin.Context) {
 	}
 	fmt.Printf("UUIDv4: %s\n", guid)
 
-	c.JSON(http.StatusOK, gin.H{"status":"success", "data": userRecord, "session": sessionRecord})
+	// get the users resources
+	userResources := models.Stockpile{}
+	if err := db.Where("user_id = ?", userRecord.ID).First(&userResources).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// get the users buildings
+	userBuildings := []models.Building{}
+	if err := db.Where("user_id = ?", userRecord.ID).Find(&userBuildings).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status":"success", "data": userRecord, "session": sessionRecord, "Resources": userResources, "Buildings": userBuildings})
 	return
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": hasPassword.Error()})
