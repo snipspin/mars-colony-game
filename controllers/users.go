@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/nu7hatch/gouuid"
 	"github.com/snipspin/mars-colony-game/models"
 )
 
@@ -98,8 +101,28 @@ func SignIn(c *gin.Context) {
 	// compare passwords
 	if hasPassword := models.VerifyPassword(userRecord.Password, json.Password); hasPassword == nil {
 		// user exists
-		c.JSON(http.StatusOK, gin.H{"data": userRecord})
-		return
+		// create a GUID
+		guid,err := uuid.NewV4()
+		if err != nil {
+			fmt.Println("error:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	sessionRecord := models.Session{}
+	db.Where("user_id = ?", userRecord.ID).First(&sessionRecord)
+	if len(sessionRecord.SESSION) == 0 {
+		// store new session id
+		fmt.Println("Store a new Session")
+		sessionRecord.UserID = userRecord.ID
+		sessionRecord.SESSION = fmt.Sprintf("%s",guid)
+		fmt.Println(len(sessionRecord.SESSION))
+		sessionRecord.EXPIRES = time.Now().AddDate(0, 1, 0)
+		db.Create(&sessionRecord)
+	}
+	fmt.Printf("UUIDv4: %s\n", guid)
+
+	c.JSON(http.StatusOK, gin.H{"status":"success", "data": userRecord, "session": sessionRecord})
+	return
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": hasPassword.Error()})
 	}
