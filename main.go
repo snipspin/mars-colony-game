@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/contrib/static"
@@ -38,7 +39,11 @@ func main() {
 	// serve static files first
 	r.Use(static.Serve("/", static.LocalFile("./build", true)))
 
+	r.GET("/head", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"yay": c.Request.Header})
+	})
 	r.POST("/api/signup", controllers.SignUp)
+	r.POST("/api/signin", controllers.SignIn)
 	r.POST("/api/checknick", controllers.CheckForNickname)
 	r.POST("/api/save", controllers.SetUserState)
 	r.POST("/api/load", controllers.GetUserState)
