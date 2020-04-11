@@ -27,13 +27,13 @@ func GetUserState(c *gin.Context) {
 	// get the users resources
 	userResources := models.Stockpile{}
 	if err := db.Where("user_id = ?", userRecord.ID).First(&userResources).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error3": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	// get the users buildings
 	userBuildings := []models.Building{}
 	if err := db.Where("user_id = ?", userRecord.ID).Find(&userBuildings).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error4": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
