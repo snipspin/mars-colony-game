@@ -17,6 +17,8 @@ const BuildingCell = (props) => {
 		root: {
     		color: theme.palette.getContrastText(green[500]),
     		borderColor: green[500],
+    		height: "45px",
+    		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: green[200],
       			borderColor: green[300],
@@ -33,6 +35,8 @@ const BuildingCell = (props) => {
 		root: {
     		color: "black",
     		borderColor: blue[500],
+    		maxWidth: "100px",
+    		maxHeight: "50px",
     		'&:hover': {
       			backgroundColor: blue[200],
       			borderColor: blue[300],
@@ -49,6 +53,8 @@ const BuildingCell = (props) => {
 		root: {
     		color: "black",
     		borderColor: red[500],
+    		maxWidth: "100px",
+    		maxHeight: "50px",
     		'&:hover': {
       			backgroundColor: red[200],
       			borderColor: red[300],

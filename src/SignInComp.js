@@ -63,9 +63,8 @@ const SignUpCom = (props) => {
         .then((response) => {
             response.json().then(result => {
                 if(response.ok) {
-                    props.setUser(result.user)
-                    props.setSignedIn(true)
-                    setMessage('Happy!')
+                    props.loadUserData(result)
+                    setMessage('Signed In')
                 } else {
                     setMessage(`${response.status} ${response.statusText}: ${result.message}`)
                     handleOpen()

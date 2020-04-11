@@ -3,6 +3,7 @@ import {Route, Switch, Redirect} from 'react-router-dom'
 import ActiveBuildings from './ActiveBuildings'
 import LotsOverview from './LotsOverview'
 import SignUpComp from './SignUpComp'
+import SignInComp from './SignInComp'
 
 const GameSpace = (props) => {
 
@@ -11,8 +12,9 @@ const GameSpace = (props) => {
 		<div>
 			<Switch>
 				<Route path='/signup' component={()=> <SignUpComp updateUser={props.updateUser} setUser={props.setUser} signup={props.signup} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
+				<Route path='/signin' component={()=> <SignInComp loadUserData={props.loadUserData} />} />
 				<Route path='/lots' component={() => 
-					<LotsOverview water={props.water} food={props.food} people={props.people} signedIn={props.signedIn}
+					<LotsOverview logOut={props.logOut} loadGame={props.loadGame} saveGame={props.saveGame} water={props.water} food={props.food} people={props.people} signedIn={props.signedIn}
 						setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} 
 						worldSize={props.worldSize} worldLots={props.buildings} addNewBuildingToLot={props.addNewBuildingToLot} 
 						waterThreshold={props.waterThreshold} foodThreshold={props.foodThreshold} peopleThreshold={props.peopleThreshold}
@@ -20,8 +22,8 @@ const GameSpace = (props) => {
 						addLots={props.addLots}
 					/>} 
 				/>
-				<Route path='/' component={() => <ActiveBuildings reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
-				<Route path='/active' component={() => <ActiveBuildings reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/' component={() => <ActiveBuildings logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/active' component={() => <ActiveBuildings logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
 			</Switch>
 			
 			

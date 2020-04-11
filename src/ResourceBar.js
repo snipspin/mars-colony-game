@@ -5,28 +5,30 @@ import EcoIcon from '@material-ui/icons/Eco'
 import EcoOutlinedIcon from '@material-ui/icons/EcoOutlined'
 import LocalDrinkOutlinedIcon from '@material-ui/icons/LocalDrinkOutlined'
 import {Link as RouterLink, Redirect} from 'react-router-dom'
+
 import './App.css'
+
+
 const ResourceBar = (props) => {
 	const LinkBehaviorSignUp = React.forwardRef((props, ref) => (
 		<RouterLink ref={ref} to="/signup" {...props} />
 	))
 	const [localUsername, setLocalUsername] = useState("")
-
 	useEffect(() => {
 	}, [localUsername])
-
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		props.loadGame(localUsername)
 	}
 	const handleSave = (e) => {
 		e.preventDefault()
-		const saved = props.saveGame()
-		if(saved){
-			return <Redirect to="/" />
-		}
-
+		props.saveGame()
 	}
+	const handleLogOut = (e) => {
+		e.preventDefault()
+		props.logOut()
+	}
+
 	return (
 		<Grid
 			container
@@ -36,7 +38,7 @@ const ResourceBar = (props) => {
 			spacing={1}
 		>
 			<Grid item xs={12}>
-				<h2 style={{"fontWeight":"normal"}}>Marsian Terraforming</h2>
+				<h2 style={{"fontWeight":"normal"}}>Martian Terraforming</h2>
 			</Grid>
 			{props.signedIn === false ? 			
 				<Grid item xs={12}>
@@ -44,7 +46,12 @@ const ResourceBar = (props) => {
 						Sign Up
 					</Button>
 				</Grid>
-				: <div></div>}
+				:
+				<Grid item xs={12}>
+					<Button variant="outlined" onClick={(e)=> handleLogOut(e)}>
+						Log Out
+					</Button>
+				</Grid>}
 			{props.signedIn === true ? 
 				<Grid item xs={12}>
 					<Button variant="outlined" onClick={(e) => handleSave(e)}>
@@ -54,9 +61,9 @@ const ResourceBar = (props) => {
 				:
 				<Box>
 				<Grid item xs={12}>
-            		<FormControl style={{"marginBottom":"5px"}}>
-                		<InputLabel htmlFor="user">Enter User Name:</InputLabel>
-                		<Input style={{"marginTop":"5px"}} id="user" name="user" aria-describedby="username-form" 
+            		<FormControl variant="outlined"style={{"marginBottom":"5px"}}>
+                		<InputLabel variant="outlined" htmlFor="user">Enter Username:</InputLabel>
+                		<Input style={{"textAlign":"center","marginTop":"5px"}} id="user" name="user" aria-describedby="username-form" 
                 			onChange={(e) => setLocalUsername(e.currentTarget.value)} required disableUnderline={true}/>
                 	</FormControl>
                 </Grid>
