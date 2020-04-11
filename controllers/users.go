@@ -12,7 +12,7 @@ import (
 // SignUp handles /api/signup route
 func SignUp(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	var json = models.Login{}
+	var json = models.SignUp{}
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -60,10 +60,63 @@ func SignUp(c *gin.Context) {
 	return
 }
 
+func SignIn(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var json = models.SignIn{}
+	errStr := ""
+	errStrSet := false
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if len(json.Nickname) == 0 && len(json.Email) == 0 {
+		errStr += "No username or email found. "
+		errStrSet = true
+	}
+
+	if len(json.Password) == 0 {
+		errStr += "No password found. "
+		errStrSet = true
+	}
+
+	if errStrSet {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errStr})
+		return
+	}
+
+	userRecord := models.User{}
+	// check if there is a user record with provided nickname
+	if hasNick := UserExists(db, json.Nickname); hasNick == true {
+		db.Where("nickname = ?", json.Nickname).First(&userRecord)
+	} else if hasEmail := EmailExists(db, json.Email); hasEmail == true {
+		// or if there is a user record with provided email
+		db.Where("email = ?", json.Email).First(&userRecord)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No record found"})
+		return
+	}
+	// compare passwords
+	if hasPassword := models.VerifyPassword(userRecord.Password, json.Password); hasPassword == nil {
+		// user exists
+		c.JSON(http.StatusOK, gin.H{"data": userRecord})
+		return
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": hasPassword.Error()})
+	}
+}
 func UserExists(conn *gorm.DB, nickname string) bool {
 	userRecord := models.User{}
 	conn.Where("nickname = ?", nickname).First(&userRecord)
 	if userRecord.Nickname != "" {
+		return true
+	}
+	return false
+}
+
+func EmailExists(conn *gorm.DB, email string) bool {
+	userRecord := models.User{}
+	conn.Where("email = ?", email).First(&userRecord)
+	if userRecord.Email != "" {
 		return true
 	}
 	return false
