@@ -163,7 +163,7 @@ const LotsOverview = (props) => {
   return (
     <Box style={{"display":"flex","justifyContent":"center","alignItems":"center"}}>
       <Box style={{"backgroundColor":"rgba(255,255,255,.75)", "maxWidth":"100%", "marginBottom":"25px", "marginTop":"25px", "border":"2px black solid", "borderRadius":"10px", "minWidth":"450px", "width":"50%", "height":"85%"}}>
-      <ResourceBar logOut={props.logOut} loadGame={props.loadGame} saveGame={props.saveGame} signedIn={props.signedIn} gameSaved={props.gameSaved} setGameSaved={props.setGameSaved} water={props.water} food={props.food} people={props.people} reset={props.reset} />
+      <ResourceBar handleCookieLogout={props.handleCookieLogout} logOut={props.logOut} loadGame={props.loadGame} saveGame={props.saveGame} signedIn={props.signedIn} gameSaved={props.gameSaved} setGameSaved={props.setGameSaved} water={props.water} food={props.food} people={props.people} reset={props.reset} />
         <Grid
           container
           justify="center"

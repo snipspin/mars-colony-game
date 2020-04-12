@@ -4,7 +4,6 @@ import {withStyles} from '@material-ui/core/styles'
 import {green, blue, red} from '@material-ui/core/colors'
 
 
-
 const BuildingCell = (props) => {
 	const [localResource, setLocalResource] = useState(props.amount)
 	const [localThreshold, setLocalThreshold]= useState(props.timer)
@@ -17,7 +16,7 @@ const BuildingCell = (props) => {
 		root: {
     		color: theme.palette.getContrastText(green[500]),
     		borderColor: green[500],
-    		height: "45px",
+    		minHeight: "50px",
     		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: green[200],
@@ -35,7 +34,7 @@ const BuildingCell = (props) => {
 		root: {
     		color: "black",
     		borderColor: blue[500],
-    		height: "45px",
+    		minHeight: "50px",
     		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: blue[200],
@@ -53,7 +52,7 @@ const BuildingCell = (props) => {
 		root: {
     		color: "black",
     		borderColor: red[500],
-    		height: "45px",
+    		minHeight: "50px",
     		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: red[200],
@@ -83,6 +82,7 @@ const BuildingCell = (props) => {
 			clearTimeout(timeOut)
 		}
 	},[localResource, localThreshold, props, increment])
+
 	const clickCallBack = useCallback(() => {
 		const clickHandler = () => {
 			let amount = localResource + props.resource
@@ -94,17 +94,6 @@ const BuildingCell = (props) => {
 		}
 		clickHandler()
 	},[localResource, harvest, props])
-/*	const clickHandler = (e) => {
-		e.preventDefault()
-		// props.onClick(localResource)
-		let amount = localResource + props.resource
-		props.setResource(amount)
-		setLocalResource(0)
-		props.updateBuildingAmount(props.lot, 0)
-		let harv = harvest + 1
-		setHarvest(harv)
-
-*/	
 	const clickUpgradeCallBack = useCallback(() => {
 		const clickUpgradeHandler = () => {
 			let currLevel = buildingLevel + 1
@@ -123,7 +112,7 @@ const BuildingCell = (props) => {
 		return (<BlueButton variant="outlined" onClick={() => clickCallBack()}>Harvest</BlueButton>)
 	},[clickCallBack])
 	const RedMemoHarvest = useMemo(() => {
-		return (<RedButton variant="outlined" onClick={() => clickCallBack()}>Harvest</RedButton>)
+		return (<RedButton variant="outlined" onClick={() => clickCallBack()}>Nurture</RedButton>)
 	},[clickCallBack])
 
 	const GreenMemoUpgrade = useMemo(() => {

@@ -22,8 +22,19 @@ const GameSpace = (props) => {
 						addLots={props.addLots}
 					/>} 
 				/>
-				<Route path='/' component={() => <ActiveBuildings handleCookieLogout={props.handleCookieLogout} logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
-				<Route path='/active' component={() => <ActiveBuildings handleCookieLogout={props.handleCookieLogout} logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				<Route path='/' component={() => <ActiveBuildings waterManager={props.waterManager} setWaterManager={props.setWaterManager}
+					allowManager={props.allowManager} handleCookieLogout={props.handleCookieLogout} foodManager={props.foodManager} setFoodManager={props.setFoodManager}
+					logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} peopleManager={props.peopleManager} setPeopleManager={props.setPeopleManager}
+					saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} 
+					upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} 
+					people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
+				
+				<Route path='/active' component={() => <ActiveBuildings waterManager={props.waterManager} setWaterManager={props.setWaterManager} 
+					foodManager={props.foodManager} setFoodManager={props.setFoodManager} peopleManager={props.peopleManager} setPeopleManager={props.setPeopleManager}
+					allowManager={props.allowManager} handleCookieLogout={props.handleCookieLogout} logOut={props.logOut} 
+					reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} saveGame={props.saveGame} updateTimer={props.updateTimer} 
+					updateBuildingAmount={props.updateBuildingAmount} upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} 
+					food={props.food} people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
 			</Switch>
 			
 			
