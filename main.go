@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"net/http"
 	"time"
 
 	"github.com/gin-gonic/contrib/static"
@@ -21,6 +20,9 @@ func main() {
 
 	r := gin.Default()
 
+	// serve static files first
+	r.Use(static.Serve("/", static.LocalFile("./build", true)))
+
 	db := db.NewDBConnection()
 	conn, err := db.Open()
 
@@ -38,8 +40,7 @@ func main() {
 		c.Next()
 	})
 
-	// serve static files first
-	r.Use(static.Serve("/", static.LocalFile("./build", true)))
+	
 
 	// check if user logged in
 	r.Use(func(c *gin.Context) {
@@ -76,6 +77,8 @@ func main() {
 		}
 		c.Next()
 	})
+
+	
 
 	r.POST("/api/signup", controllers.SignUp)
 	r.POST("/api/signin", controllers.SignIn)
