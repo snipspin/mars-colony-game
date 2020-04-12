@@ -129,15 +129,8 @@ func SignIn(c *gin.Context) {
 			return
 		}
 
-	sessionRecord := models.Session{}
-	db.Where("user_id = ?", userRecord.ID).First(&sessionRecord)
-	if len(sessionRecord.SESSION) == 0 {
-		// store new session id
-		sessionRecord.UserID = userRecord.ID
-		sessionRecord.SESSION = fmt.Sprintf("%s",guid)
-		sessionRecord.EXPIRES = time.Now().AddDate(0, 1, 0)
-		db.Create(&sessionRecord)
-	}
+	sessionRecord := models.Session{UserID: userRecord.ID,SESSION: fmt.Sprintf("%s",guid),EXPIRES: time.Now().AddDate(0, 1, 0)}
+	db.Where("user_id = ?", userRecord.ID).Assign(sessionRecord).FirstOrCreate(&sessionRecord)
 
 	// get the users resources
 	userResources := models.Stockpile{}
@@ -163,11 +156,20 @@ func SignIn(c *gin.Context) {
 }
 
 func SignOut(c *gin.Context) {
-	c.Set("userLoggedIn", false)
-	c.Set("userID", 0)
-	c.SetCookie("user", "", 3600, "/", "", false, true)
-	c.SetCookie("sessionid", "", 3600, "/", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"status":"success"})
+	if c.MustGet("userLoggedIn") == true {
+		db := c.MustGet("db").(*gorm.DB)
+		sessionRecord := models.Session{}
+		db.Where("user_id = ?", c.MustGet("userID")).First(&sessionRecord)
+		db.Delete(&sessionRecord)
+		
+		c.Set("userLoggedIn", false)
+		c.Set("userID", 0)
+		c.SetCookie("user", "", 3600, "/", "", false, true)
+		c.SetCookie("sessionid", "", 3600, "/", "", false, true)
+		c.JSON(http.StatusOK, gin.H{"status":"success"}) 
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Not signed in"}) 
+	}
 }
 func UserExists(conn *gorm.DB, nickname string) bool {
 	userRecord := models.User{}

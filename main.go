@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"time"
-
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -40,8 +39,6 @@ func main() {
 		c.Next()
 	})
 
-	
-
 	// check if user logged in
 	r.Use(func(c *gin.Context) {
 		db := c.MustGet("db").(*gorm.DB)
@@ -77,8 +74,6 @@ func main() {
 		}
 		c.Next()
 	})
-
-	
 
 	r.POST("/api/signup", controllers.SignUp)
 	r.POST("/api/signin", controllers.SignIn)

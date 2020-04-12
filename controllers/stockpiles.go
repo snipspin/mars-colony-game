@@ -34,7 +34,6 @@ func GetUserState(c *gin.Context) {
 		}
 	}
 
-
 	// get the users resources
 	userResources := models.Stockpile{}
 	if err := db.Where("user_id = ?", userRecord.ID).First(&userResources).Error; err != nil {
@@ -78,19 +77,7 @@ func SetUserState(c *gin.Context) {
 			return
 		}
 	}
-	
 
-	// if err := c.ShouldBindJSON(&json); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// take the user from json and check if it exists, return an error if it doesn't
-	// userRecord := models.User{}
-	// if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
 	// take the resources from json and update the stockpile table
 	saveResources(db, json.Resources, userRecord)
 
