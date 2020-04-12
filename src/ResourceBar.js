@@ -26,6 +26,7 @@ const ResourceBar = (props) => {
 	}
 	const handleLogOut = (e) => {
 		e.preventDefault()
+		props.handleCookieLogout()
 		props.logOut()
 	}
 

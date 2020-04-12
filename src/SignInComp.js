@@ -63,6 +63,8 @@ const SignUpCom = (props) => {
         .then((response) => {
             response.json().then(result => {
                 if(response.ok) {
+                    props.userOnChange(result.user["nickname"])
+                    props.sessionOnChange(result.session["sessionid"])
                     props.loadUserData(result)
                     setMessage('Signed In')
                 } else {

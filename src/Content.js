@@ -332,9 +332,9 @@ const Content = (props) => {
 	return (
 		<div>
 		<GameSpace
-		loadGame={loadGame} saveGame={saveGame} loadUserData={loadUserData}
-		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn}
-		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}
+		loadGame={loadGame} saveGame={saveGame} loadUserData={loadUserData} userOnChange={props.userOnChange}
+		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn} sessionOnChange={props.sessionOnChange}
+		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}	handleCookieLogout={props.handleCookieLogout}
 		setWater={setWater} setFood={setFood} setPeople={setPeople} updateTimer={updateTimer}
 		addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} 
 		updateBuildingAmount={updateBuildingAmount} buildings={buildings} reset={handleResetButton}

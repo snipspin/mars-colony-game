@@ -66,6 +66,8 @@ const SignUpCom = (props) => {
             response.json().then(result => {
                 if(response.ok) {
                     props.updateUser(result.user["nickname"])
+                    props.userOnChange(result.user["nickname"])
+                    props.sessionOnChange(result.session["sessionid"])
                     props.setSignedIn(true)
                 //props.updateUser(result.token)
                 } else {
@@ -98,7 +100,7 @@ const SignUpCom = (props) => {
         return <Redirect to="/" />
     }
     if(redirect) {
-        return <Redirect to="/signup" />
+        return <Redirect to="/signin" />
     }
     return(
         <Box style={{"backgroundColor":"rgba(255,255,255,.75)", "maxWidth":"75%", "minWidth":"50%", "margin": "25px auto", "textAlign":"center", "border":"2px black solid", "borderRadius":"10px"}}>
@@ -113,9 +115,9 @@ const SignUpCom = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                     <Box>
-                        <span className="italic">Don't have an account?</span>
-                        <p className="signup">Create one here: &nbsp;
-                            <Button onClick={(e) => handleRedirect(e)} variant="outlined">Sign up</Button>
+                        <span className="italic">Already have an account?</span>
+                        <p className="signup">Sign in here: &nbsp;
+                            <Button onClick={(e) => handleRedirect(e)} variant="outlined">Sign In</Button>
                         </p>
                     </Box>
                 </Grid> 
