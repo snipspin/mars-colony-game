@@ -10,18 +10,28 @@ import (
 
 func GetUserState(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	json := models.LoadUserState{}
 
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// get the user record
 	userRecord := models.User{}
-	if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+
+	// check if the user is logged in or not
+	if c.MustGet("userLoggedIn") == false || c.MustGet("userID") == 0 {
+		json := models.LoadUserState{}
+
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// get the user record with transmitted data
+		if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		// get the user record with context data
+		if err := db.Where("id = ?", c.MustGet("userID")).First(&userRecord).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	// get the users resources
@@ -42,19 +52,32 @@ func GetUserState(c *gin.Context) {
 
 func SetUserState(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+	userRecord := models.User{}
 	json := models.SaveUserState{}
-
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	// check if the user is logged in or not
+	if c.MustGet("userLoggedIn") == false || c.MustGet("userID") == 0 {
 
-	// take the user from json and check if it exists, return an error if it doesn't
-	userRecord := models.User{}
-	if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// get the user record with transmitted data
+		if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		// get the user record with context data
+		if err := db.Where("id = ?", c.MustGet("userID")).First(&userRecord).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
+
 	// take the resources from json and update the stockpile table
 	saveResources(db, json.Resources, userRecord)
 
