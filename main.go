@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"fmt"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -35,7 +34,7 @@ func main() {
 		c.Set("db", conn)
 		c.Next()
 	})
-	
+
 	// serve static files first
 	r.Use(static.Serve("/", static.LocalFile("./build", true)))
 
