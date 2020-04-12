@@ -58,8 +58,24 @@ func SignUp(c *gin.Context) {
 		db.Create(&cb)
 	}
 
+	guid,err := uuid.NewV4()
+	if err != nil {
+		fmt.Println("error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	sessionRecord := models.Session{}
+	db.Where("user_id = ?", newUser.ID).First(&sessionRecord)
+	if len(sessionRecord.SESSION) == 0 {
+		// store new session id
+		sessionRecord.UserID = newUser.ID
+		sessionRecord.SESSION = fmt.Sprintf("%s",guid)
+		sessionRecord.EXPIRES = time.Now().AddDate(0, 1, 0)
+		db.Create(&sessionRecord)
+	}
+
 	// respond with user created, the stockpile and default buildings
-	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings, "user": userCreated})
+	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings, "user": userCreated, "session":sessionRecord})
 	return
 }
 
@@ -108,18 +124,16 @@ func SignIn(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
 	sessionRecord := models.Session{}
 	db.Where("user_id = ?", userRecord.ID).First(&sessionRecord)
 	if len(sessionRecord.SESSION) == 0 {
 		// store new session id
-		fmt.Println("Store a new Session")
 		sessionRecord.UserID = userRecord.ID
 		sessionRecord.SESSION = fmt.Sprintf("%s",guid)
-		fmt.Println(len(sessionRecord.SESSION))
 		sessionRecord.EXPIRES = time.Now().AddDate(0, 1, 0)
 		db.Create(&sessionRecord)
 	}
-	fmt.Printf("UUIDv4: %s\n", guid)
 
 	// get the users resources
 	userResources := models.Stockpile{}
