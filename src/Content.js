@@ -2,7 +2,11 @@ import React, {useState, useEffect} from 'react'
 import {Route, Switch} from 'react-router-dom'
 import GameSpace from './GameSpace'
 import {Button, ClickAwayListener} from '@material-ui/core'
-
+import Snackbar, {SnackbarOrigin} from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />
+}
 const Content = (props) => {
 	const [message, setMessage] = useState('')
 	const [signedIn, setSignedIn] = useState(false)
@@ -11,10 +15,14 @@ const Content = (props) => {
 	const [food, setFood] = useState(100)
 	const [people, setPeople] = useState(100)
 	const [signup, setSignup] = useState(false)
+	const [gameSaved, setGameSaved] = useState(false)
+	const [gameLoaded, setGameLoaded] = useState(false)
 	const [waterThreshold, setWaterThreshold] = useState(0)
-  const [foodThreshold, setFoodThreshold] = useState(0)
-  const [peopleThreshold, setPeopleThreshold] = useState(0)
-  const [data, setData] = useState({})
+  	const [foodThreshold, setFoodThreshold] = useState(0)
+  	const [peopleThreshold, setPeopleThreshold] = useState(0)
+  	const [data, setData] = useState({})
+  	const [open, setOpen] = useState(false)
+  	const [openError, setOpenError] = useState(false)
 
 		// Get the initial set of buildings owned by player
 	const [buildings, setBuildings] = useState([])
@@ -32,6 +40,10 @@ const Content = (props) => {
 		{type:"empty", level:0, lot:7, amount:0, timer:15},
 		{type:"empty", level:0, lot:8, amount:0, timer:15}, 
 	]
+    const position = {
+        vertical: 'top',
+        horizontal: 'center'
+    }
 	useEffect(()=> {
 
 	},[user,water,food,people,buildings])
@@ -53,14 +65,17 @@ const Content = (props) => {
 			// We have access to local storage
 			let storedBuildings = JSON.parse(localStorage.getItem("buildings"))
 			let storedResources = JSON.parse(localStorage.getItem("resources"))
-
+			let storedUser = JSON.parse(localStorage.getItem("user"))
 			setUseLocalStorage(true)
 			if (storedBuildings !== null && storedBuildings.length > 0) {
 				setBuildings(storedBuildings)
 			} else {
 				setBuildings(defaultBuildings)
 			}
-
+			if(storedUser !== null){
+				updateUser(storedUser)
+				setSignedIn(true)
+			}
 			if (storedResources !== null) {
 				setWater(storedResources.water)
 				setFood(storedResources.food)
@@ -82,6 +97,33 @@ const Content = (props) => {
 		setFoodThreshold(tempFoodThres)
 		setPeopleThreshold(tempPplThres)
 	},[])
+	const logOut = () => {
+		localStorage.clear()
+		setUser("")
+		setSignedIn(false)
+		setBuildings(defaultBuildings)
+		setWater(100)
+		setFood(100)
+		setPeople(100)
+	}
+    const handleOpen = ()=> {
+        setOpen(true)
+    }
+    const handleOpenError = ()=> {
+    	setOpenError(true)
+    }
+    const handleCloseError = (event, reason) => {
+    	if(reason === 'clickaway') {
+    		return
+    	}
+    	setOpenError(false)
+    }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return
+        }
+        setOpen(false);
+    }
 	function loadGame(username) {
 		let data = {
 			user: username
@@ -113,23 +155,53 @@ const Content = (props) => {
 	                	curr.timer = parseInt(curr.timer)
 	                	return curr
 	                })
+	                handleOpen()
 	                setBuildings(intBuildings)
 					updateUser(resultUser)
 	                setSignedIn(true)
-	                setMessage("User data was loaded!")
+	                setMessage("Game Loaded!")
 	                //props.updateUser(result.token)
 	            } else {
-	                setMessage(`${response.status} ${response.statusText}: ${result.message}`)
+	                setMessage(`${response.status} ${response.statusText}: ${result.error}`)
+	                handleOpenError()
 	            }
-	        }).catch( (err) => console.log(err))
+	        }).catch( (err) => {
+	        	console.log(err)
+	        	setMessage(`Error: ${err.toString()}`)
+	        	handleOpenError()
+	        })
 	    }).catch( (err) => {
 	        console.log('Error', err)
 	        setMessage(`Error: ${err.toString()}`)
+	        handleOpenError()
 	    })
 
 	}
+	function loadUserData(result) {
+	    setData(result)
+	    let resultUser = result.user
+	    let resultResources = result.Resources
+	    let intWater =  parseInt(resultResources.water)
+	    let intFood = parseInt(resultResources.food)
+	    let intPeople = parseInt(resultResources.people)
+	    setWater(intWater)
+	    setFood(intFood)
+	    setPeople(intPeople)
+	    let resultBuildings = result.Buildings
+	    let intBuildings = resultBuildings.map((curr) => {
+			curr.lot = parseInt(curr.lot)
+	        curr.level = parseInt(curr.level)
+	        curr.amount = parseInt(curr.amount)
+	        curr.timer = parseInt(curr.timer)
+	        return curr
+	    })
+	    handleOpen()
+	    setBuildings(intBuildings)
+		updateUser(resultUser)
+	    setSignedIn(true)
+	    setMessage("Game Loaded!")
+	}
 	function saveGame() {
-		let success = false
 		if(useLocalStorage && signedIn){
 			let tempUser = user
 			let tempBuildings = buildings
@@ -169,16 +241,22 @@ const Content = (props) => {
 	        .then ((response) => {
 	            response.json().then(result => {
 	                if(response.ok) {
-	                    setMessage("User data was saved!")
-	                    success = true
+	                	handleOpen()
+	                    setMessage(`Game Saved!`)
+	             		setGameSaved(true)
 	                //props.updateUser(result.token)
 	                } else {
-	                    setMessage(`${response.status} ${response.statusText}: ${result.message}`)
+	                    setMessage(`${response.status} ${response.statusText}: ${result.error}`)
+	                    handleOpenError()
 	                }
-	            }).catch( (err) => console.log(err))
+	            }).catch( (err) => {
+	            	setMessage(`Error: ${err.toString()}`)
+	            	handleOpenError()
+	        	})
 	        }).catch( (err) => {
 	            console.log('Error', err)
 	            setMessage(`Error: ${err.toString()}`)
+	            handleOpenError()
 	        })
 	        let revertBuildings = buildings.map((curr) => {
 				curr.lot = parseInt(curr.lot)
@@ -188,7 +266,6 @@ const Content = (props) => {
 				return curr
 			})
 		}
-		return(success)
 	}
 	function handleResetButton(){
 		if(useLocalStorage){
@@ -253,17 +330,29 @@ const Content = (props) => {
 	}
 
 	return (
+		<div>
 		<GameSpace
-		saveGame={saveGame} loadGame={loadGame} 
-		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn}
-		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}
+		loadGame={loadGame} saveGame={saveGame} loadUserData={loadUserData} userOnChange={props.userOnChange}
+		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn} sessionOnChange={props.sessionOnChange}
+		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}	handleCookieLogout={props.handleCookieLogout}
 		setWater={setWater} setFood={setFood} setPeople={setPeople} updateTimer={updateTimer}
 		addNewBuildingToLot={addNewBuildingToLot} upgradeBuildingInLot={upgradeBuildingInLot} 
 		updateBuildingAmount={updateBuildingAmount} buildings={buildings} reset={handleResetButton}
-		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize}
+		setBuildings={setBuildings} worldSize={worldSize} setWorldSize={setWorldSize} logOut={logOut}
 		waterThreshold={waterThreshold} foodThreshold={foodThreshold} peopleThreshold={peopleThreshold} 
 		setWaterThreshold={setWaterThreshold} setFoodThreshold={setFoodThreshold} setPeopleThreshold={setPeopleThreshold}
 		addLots={AddThreeEmptyLots} />
+		<Snackbar anchorOrigin={position} open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success">
+              {message}
+            </Alert>
+        </Snackbar>
+        <Snackbar anchorOrigin={position} open={openError} autoHideDuration={6000} onClose={handleCloseError}>
+        <Alert onClose={handleCloseError} severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
+        </div>
 	)
 }
 export default Content
