@@ -74,6 +74,10 @@ func SignUp(c *gin.Context) {
 		db.Create(&sessionRecord)
 	}
 
+	c.Set("userLoggedIn", true)
+	c.Set("userID", userCreated.ID)
+	c.SetCookie("user", userCreated.Nickname, 3600, "/", "", false, true)
+	c.SetCookie("sessionid", sessionRecord.SESSION, 3600, "/", "", false, true)
 	// respond with user created, the stockpile and default buildings
 	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings, "user": userCreated, "session":sessionRecord})
 	return
@@ -147,12 +151,23 @@ func SignIn(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	c.Set("userLoggedIn", true)
+	c.Set("userID", userRecord.ID)
+	c.SetCookie("user", userRecord.Nickname, 3600, "/", "", false, true)
+	c.SetCookie("sessionid", sessionRecord.SESSION, 3600, "/", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"status":"success", "data": userRecord, "session": sessionRecord, "Resources": userResources, "Buildings": userBuildings})
 	return
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": hasPassword.Error()})
 	}
+}
+
+func SignOut(c *gin.Context) {
+	c.Set("userLoggedIn", false)
+	c.Set("userID", 0)
+	c.SetCookie("user", "", 3600, "/", "", false, true)
+	c.SetCookie("sessionid", "", 3600, "/", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"status":"success"})
 }
 func UserExists(conn *gorm.DB, nickname string) bool {
 	userRecord := models.User{}
