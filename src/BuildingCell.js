@@ -35,8 +35,8 @@ const BuildingCell = (props) => {
 		root: {
     		color: "black",
     		borderColor: blue[500],
-    		maxWidth: "100px",
-    		maxHeight: "50px",
+    		height: "45px",
+    		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: blue[200],
       			borderColor: blue[300],
@@ -53,8 +53,8 @@ const BuildingCell = (props) => {
 		root: {
     		color: "black",
     		borderColor: red[500],
-    		maxWidth: "100px",
-    		maxHeight: "50px",
+    		height: "45px",
+    		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: red[200],
       			borderColor: red[300],
