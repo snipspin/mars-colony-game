@@ -18,6 +18,8 @@ type CheckNick struct {
 
 type SaveUserState struct {
 	Nickname  string `form:"user" json:"user" xml:"user"  binding:"required"`
+	Password 	string `form:"password" json:"password" xml:"password"`
+	Session		string `form:"session" json:"session" xml:"session"`
 	Resources Resources
 	Buildings MultiBuildings
 }
