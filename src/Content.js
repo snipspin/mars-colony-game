@@ -23,6 +23,10 @@ const Content = (props) => {
   	const [data, setData] = useState({})
   	const [open, setOpen] = useState(false)
   	const [openError, setOpenError] = useState(false)
+  	const [allowManager, setAllowManager] = useState(false)
+  	const [waterManager, setWaterManager] = useState(false)
+  	const [foodManager, setFoodManager] = useState(false)
+  	const [peopleManager, setPeopleManager] = useState(false)
 
 		// Get the initial set of buildings owned by player
 	const [buildings, setBuildings] = useState([])
@@ -52,7 +56,16 @@ const Content = (props) => {
 			let resources = {water: water, food: food, people: people}
 			localStorage.setItem("resources", JSON.stringify(resources) )
 		}
+		if((water >= 100000 || food >=100000) || people >= 100000){
+			setAllowManager(true)
+		}
 	},[water, food, people, useLocalStorage])
+	useEffect(()=> {
+		if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+	},[waterManager,foodManager,peopleManager])
 	useEffect(()=> {
 		if(useLocalStorage) {
 			let userObj = {user: user}
@@ -66,13 +79,19 @@ const Content = (props) => {
 			let storedBuildings = JSON.parse(localStorage.getItem("buildings"))
 			let storedResources = JSON.parse(localStorage.getItem("resources"))
 			let storedUser = JSON.parse(localStorage.getItem("user"))
+			let storedManagers = JSON.parse(localStorage.getItem("managers"))
 			setUseLocalStorage(true)
 			if (storedBuildings !== null && storedBuildings.length > 0) {
 				setBuildings(storedBuildings)
 			} else {
 				setBuildings(defaultBuildings)
 			}
-			if(storedUser !== null){
+			if(storedManagers !== null){
+				setWaterManager(storedManagers.waterManager)
+				setFoodManager(storedManagers.foodManager)
+				setPeopleManager(storedManagers.peopleManager)
+			}
+			if(storedUser !== null && storedUser !== ""){
 				updateUser(storedUser)
 				setSignedIn(true)
 			}
@@ -123,6 +142,27 @@ const Content = (props) => {
           return
         }
         setOpen(false);
+    }
+    function setManagerWater() {
+    	setWaterManager(true)
+    	if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+    }
+    function setManagerFood() {
+    	setFoodManager(true)
+    	if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+    }
+    function setManagerPeople() {
+    	setPeopleManager(true)
+    	if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
     }
 	function loadGame(username) {
 		let data = {
@@ -198,9 +238,10 @@ const Content = (props) => {
 	    handleOpen()
 	    setBuildings(intBuildings)
 		updateUser(resultUser)
-	    setSignedIn(true)
 	    setMessage("Game Loaded!")
+	    setSignedIn(true)
 	}
+
 	function saveGame() {
 		if(useLocalStorage && signedIn){
 			let tempUser = user
@@ -271,6 +312,9 @@ const Content = (props) => {
 		if(useLocalStorage){
 			localStorage.clear()
 			setBuildings(defaultBuildings)
+			setWaterManager(false)
+			setFoodManager(false)
+			setPeopleManager(false)
 			setWater(100)
 			setFood(100)
 			setPeople(100)
@@ -332,6 +376,9 @@ const Content = (props) => {
 	return (
 		<div>
 		<GameSpace
+		allowManager={allowManager} setAllowManager={setAllowManager} 
+		waterManager={waterManager} setManagerWater={setManagerWater} foodManager={foodManager} 
+		setManagerFood={setManagerFood} peopleManager={peopleManager} setManagerPeople={setManagerPeople} 
 		loadGame={loadGame} saveGame={saveGame} loadUserData={loadUserData} userOnChange={props.userOnChange}
 		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn} sessionOnChange={props.sessionOnChange}
 		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}	handleCookieLogout={props.handleCookieLogout}

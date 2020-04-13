@@ -59,19 +59,7 @@ const ResourceBar = (props) => {
 						Save Game
 					</Button>
 				</Grid>
-				:
-				<Box>
-				<Grid item xs={12}>
-            		<FormControl variant="outlined"style={{"marginBottom":"5px"}}>
-                		<InputLabel variant="outlined" htmlFor="user">Enter Username:</InputLabel>
-                		<Input style={{"textAlign":"center","marginTop":"5px"}} id="user" name="user" aria-describedby="username-form" 
-                			onChange={(e) => setLocalUsername(e.currentTarget.value)} required disableUnderline={true}/>
-                	</FormControl>
-                </Grid>
-                <Grid style={{"display": "flex", "justifyContent":"center", "alignItems":"center"}} item xs={12}>
-            		<Button onClick={e => handleSubmit(e)} variant="outlined">Load Game</Button>
-				</Grid>
-				</Box>
+				: <span></span>
 			}
 			<Grid item xs={12}>
 				<Button variant="outlined" onClick={() => props.reset()}>
