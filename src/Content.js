@@ -91,7 +91,7 @@ const Content = (props) => {
 				setFoodManager(storedManagers.foodManager)
 				setPeopleManager(storedManagers.peopleManager)
 			}
-			if(storedUser !== null){
+			if(storedUser !== null && storedUser !== ""){
 				updateUser(storedUser)
 				setSignedIn(true)
 			}
@@ -100,9 +100,9 @@ const Content = (props) => {
 				setFood(storedResources.food)
 				setPeople(storedResources.people)
 			} else {
-				setWater(100000)
-				setFood(100000)
-				setPeople(100000)
+				setWater(100)
+				setFood(100)
+				setPeople(100)
 			}
 
 		} else {
@@ -238,8 +238,8 @@ const Content = (props) => {
 	    handleOpen()
 	    setBuildings(intBuildings)
 		updateUser(resultUser)
-	    setSignedIn(true)
 	    setMessage("Game Loaded!")
+	    setSignedIn(true)
 	}
 
 	function saveGame() {
@@ -315,9 +315,9 @@ const Content = (props) => {
 			setWaterManager(false)
 			setFoodManager(false)
 			setPeopleManager(false)
-			setWater(100000)
-			setFood(100000)
-			setPeople(100000)
+			setWater(100)
+			setFood(100)
+			setPeople(100)
 		}
 	}
 	function updateUser(userInfo) {

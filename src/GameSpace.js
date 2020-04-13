@@ -12,7 +12,7 @@ const GameSpace = (props) => {
 		<div>
 			<Switch>
 				<Route path='/signup' component={()=> <SignUpComp userOnChange={props.userOnChange} sessionOnChange={props.sessionOnChange} updateUser={props.updateUser} setUser={props.setUser} signup={props.signup} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
-				<Route path='/signin' component={()=> <SignInComp userOnChange={props.userOnChange} sessionOnChange={props.sessionOnChange} loadUserData={props.loadUserData} />} />
+				<Route path='/signin' component={()=> <SignInComp userOnChange={props.userOnChange} sessionOnChange={props.sessionOnChange} loadUserData={props.loadUserData} signedIn={props.signedIn} setSignedIn={props.setSignedIn}/>} />
 				<Route path='/lots' component={() => 
 					<LotsOverview logOut={props.logOut} handleCookieLogout={props.handleCookieLogout} loadGame={props.loadGame} saveGame={props.saveGame} water={props.water} food={props.food} people={props.people} signedIn={props.signedIn}
 						setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} 
