@@ -61,6 +61,12 @@ const Content = (props) => {
 		}
 	},[water, food, people, useLocalStorage])
 	useEffect(()=> {
+		if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+	},[waterManager,foodManager,peopleManager])
+	useEffect(()=> {
 		if(useLocalStorage) {
 			let userObj = {user: user}
 			localStorage.setItem("user", JSON.stringify(userObj))
@@ -137,6 +143,27 @@ const Content = (props) => {
         }
         setOpen(false);
     }
+    function setManagerWater() {
+    	setWaterManager(true)
+    	if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+    }
+    function setManagerFood() {
+    	setFoodManager(true)
+    	if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+    }
+    function setManagerPeople() {
+    	setPeopleManager(true)
+    	if(useLocalStorage){
+			let managers = {waterManager: waterManager, foodManager: foodManager, peopleManager: peopleManager}
+			localStorage.setItem("managers", JSON.stringify(managers))
+		}
+    }
 	function loadGame(username) {
 		let data = {
 			user: username
@@ -190,7 +217,6 @@ const Content = (props) => {
 	    })
 
 	}
-	function setManager(type)
 	function loadUserData(result) {
 	    setData(result)
 	    let resultUser = result.user
@@ -351,8 +377,8 @@ const Content = (props) => {
 		<div>
 		<GameSpace
 		allowManager={allowManager} setAllowManager={setAllowManager} 
-		waterManager={waterManager} setWaterManager={setWaterManager} foodManager={foodManager} 
-		setFoodManager={setFoodManager} peopleManager={peopleManager} setPeopleManager={setPeopleManager} 
+		waterManager={waterManager} setManagerWater={setManagerWater} foodManager={foodManager} 
+		setManagerFood={setManagerFood} peopleManager={peopleManager} setManagerPeople={setManagerPeople} 
 		loadGame={loadGame} saveGame={saveGame} loadUserData={loadUserData} userOnChange={props.userOnChange}
 		signup={signup} setSignup={setSignup} signedIn={signedIn} setSignedIn={setSignedIn} sessionOnChange={props.sessionOnChange}
 		water={water} food={food} people={people} setUser={setUser} updateUser={updateUser}	handleCookieLogout={props.handleCookieLogout}

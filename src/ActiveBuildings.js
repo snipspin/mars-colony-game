@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Link as RouterLink} from 'react-router-dom'
 import {Button, Grid, Box, ButtonBase} from '@material-ui/core'
 import BuildingCell from './BuildingCell'
@@ -21,8 +21,9 @@ const ActiveBuildings = (props) => {
 		root: {
     		color: "black",
     		borderColor: blue[500],
-    		height: "45px",
+    		height: "50px",
     		minWidth: "75px",
+    		margin: "2px 2px",
     		'&:hover': {
       			backgroundColor: blue[200],
       			borderColor: blue[300],
@@ -39,8 +40,9 @@ const ActiveBuildings = (props) => {
 		root: {
     		color: theme.palette.getContrastText(green[500]),
     		borderColor: green[500],
-    		height: "45px",
+    		height: "50px",
     		minWidth: "75px",
+    		margin: "2px 2px",
     		'&:hover': {
       			backgroundColor: green[200],
       			borderColor: green[300],
@@ -57,8 +59,9 @@ const ActiveBuildings = (props) => {
 		root: {
     		color: "black",
     		borderColor: red[500],
-    		height: "45px",
+    		height: "50px",
     		minWidth: "75px",
+    		margin: "2px 2px",
     		'&:hover': {
       			backgroundColor: red[200],
       			borderColor: red[300],
@@ -71,23 +74,26 @@ const ActiveBuildings = (props) => {
     		}
   		},
 	}))(Button)
+	useEffect(()=> {
+
+	},[props.waterManager, props.foodManager, props.peopleManager])
 	const handleBuyWaterManager = (e) => {
 		e.preventDefault()
-		props.setWaterManager(true)
+		props.setManagerWater()
 		let tempWater = props.water
 		tempWater = tempWater - 50000
 		props.setWater(tempWater)
 	}
 	const handleBuyFoodManager = (e) => {
 		e.preventDefault()
-		props.setFoodManager(true)
+		props.setManagerFood()
 		let tempFood = props.food
 		tempFood = tempFood - 50000
 		props.setFood(tempFood)
 	}
 	const handleBuyPeopleManager = (e) => {
 		e.preventDefault()
-		props.setPeopleManager(true)
+		props.setManagerPeople()
 		let tempPeople = props.people
 		tempPeople = tempPeople - 50000
 		props.setPeople(tempPeople)
@@ -154,7 +160,7 @@ const ActiveBuildings = (props) => {
 				container
 				justify="center"
 				alignContent="center"
-				alignItems="center"
+				alignItems="center"		
 			>
 				<Grid style={{"display":"flex", "justifyContent":"center"}} item xs={12} md={4}>
 					{props.waterManager === true ? <BlueButton variant="outlined" onClick={(e) => handleHarvestAllWater(e)}>Harvest All Water</BlueButton>:<BlueButton disabled={true} variant="outlined">Harvest All Water</BlueButton>}
@@ -204,17 +210,15 @@ const ActiveBuildings = (props) => {
 			style={{"marginBottom":"50px"}}
 		>
 			{props.allowManager === true ? 
-				<Grid item xs={12} style={{"border": "2px solid black", "margin": "5px 0", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
+				<Grid item lg={12} style={{"border": "2px solid black", "margin": "5px 7px", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
 					{buyManagers()}
 				</Grid>
 				: <span></span>
 			}
-			{(props.waterManager === true || props.foodManager === true) || (props.peopleManager === true ?
-				<Grid item xs={12} style={{"border": "2px solid black", "margin": "5px 0", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
-					{showManagers()}
-				</Grid>
-				:<span></span>
-			)}
+			
+			<Grid item lg={12} style={{"border": "2px solid black", "margin": "5px 7px", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
+				{showManagers()}
+			</Grid>
 			{props.buildings.map((building, i) => (
 				getJSX(building.type, building.level, building.lot, building.amount, building.timer, i)
 			))}

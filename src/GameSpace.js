@@ -22,9 +22,9 @@ const GameSpace = (props) => {
 						addLots={props.addLots}
 					/>} 
 				/>
-				<Route path='/' component={() => <ActiveBuildings waterManager={props.waterManager} setWaterManager={props.setWaterManager}
-					allowManager={props.allowManager} handleCookieLogout={props.handleCookieLogout} foodManager={props.foodManager} setFoodManager={props.setFoodManager}
-					logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} peopleManager={props.peopleManager} setPeopleManager={props.setPeopleManager}
+				<Route path='/' component={() => <ActiveBuildings waterManager={props.waterManager} setManagerWater={props.setManagerWater}
+					allowManager={props.allowManager} handleCookieLogout={props.handleCookieLogout} foodManager={props.foodManager} setManagerFood={props.setManagerFood}
+					logOut={props.logOut} reset={props.reset} signedIn={props.signedIn} loadGame={props.loadGame} peopleManager={props.peopleManager} setManagerPeople={props.setManagerPeople}
 					saveGame={props.saveGame} updateTimer={props.updateTimer} updateBuildingAmount={props.updateBuildingAmount} 
 					upgradeBuildingInLot={props.upgradeBuildingInLot} buildings={props.buildings} water={props.water} food={props.food} 
 					people={props.people} setWater={props.setWater} setFood={props.setFood} setPeople={props.setPeople} />} />
