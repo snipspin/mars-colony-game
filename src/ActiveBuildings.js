@@ -22,8 +22,7 @@ const ActiveBuildings = (props) => {
     		color: "black",
     		borderColor: blue[500],
     		height: "50px",
-    		minWidth: "75px",
-    		margin: "2px 2px",
+    		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: blue[200],
       			borderColor: blue[300],
@@ -41,8 +40,7 @@ const ActiveBuildings = (props) => {
     		color: theme.palette.getContrastText(green[500]),
     		borderColor: green[500],
     		height: "50px",
-    		minWidth: "75px",
-    		margin: "2px 2px",
+    		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: green[200],
       			borderColor: green[300],
@@ -60,8 +58,7 @@ const ActiveBuildings = (props) => {
     		color: "black",
     		borderColor: red[500],
     		height: "50px",
-    		minWidth: "75px",
-    		margin: "2px 2px",
+    		minWidth: "200px",
     		'&:hover': {
       			backgroundColor: red[200],
       			borderColor: red[300],
@@ -210,13 +207,13 @@ const ActiveBuildings = (props) => {
 			style={{"marginBottom":"50px"}}
 		>
 			{props.allowManager === true ? 
-				<Grid item lg={12} style={{"border": "2px solid black", "margin": "5px 7px", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
+				<Grid item lg={12} style={{"border": "2px solid black", "margin": "5px 15px", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
 					{buyManagers()}
 				</Grid>
 				: <span></span>
 			}
 			
-			<Grid item lg={12} style={{"border": "2px solid black", "margin": "5px 7px", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
+			<Grid item lg={12} style={{"border": "2px solid black", "margin": "5px 15px", "padding": "20px", "borderRadius": "10px","minWidth":"95%"}}>
 				{showManagers()}
 			</Grid>
 			{props.buildings.map((building, i) => (
