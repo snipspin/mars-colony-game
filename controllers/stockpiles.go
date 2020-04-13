@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/snipspin/mars-colony-game/models"
@@ -60,16 +59,9 @@ func SetUserState(c *gin.Context) {
 	}
 	// check if the user is logged in or not
 	if c.MustGet("userLoggedIn") == false || c.MustGet("userID") == 0 {
-
-		if err := c.ShouldBindJSON(&json); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		// get the user record with transmitted data
-		if err := db.Where("nickname = ?", json.Nickname).First(&userRecord).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Not signed in"})
+		return
+		
 	} else {
 		// get the user record with context data
 		if err := db.Where("id = ?", c.MustGet("userID")).First(&userRecord).Error; err != nil {
@@ -86,7 +78,7 @@ func SetUserState(c *gin.Context) {
 	buildingRecord.UserID = userRecord.ID
 
 	saveBuildings(db, json.Buildings.Building, userRecord)
-	c.JSON(http.StatusOK, gin.H{"status": "success"})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "Buildings":json.Buildings.Building })
 	return
 }
 
