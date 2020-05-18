@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/nu7hatch/gouuid"
+	uuid "github.com/nu7hatch/gouuid"
 	"github.com/snipspin/mars-colony-game/models"
 )
 
@@ -43,6 +43,8 @@ func SignUp(c *gin.Context) {
 	newStockpile := models.Stockpile{UserID: userCreated.ID, Water: "100", Food: "100", People: "100"}
 	db.Create(&newStockpile)
 
+	newManagers := models.Managers{UserID: userCreated.ID, WaterManager: false, FoodManager: false, PeopleManager: false}
+	db.Create(&newManagers)
 	// create new buildings
 	newBuildings := [9]models.Building{}
 	setNewBuilding("People", "0", &newBuildings[0], userCreated)
@@ -58,7 +60,7 @@ func SignUp(c *gin.Context) {
 		db.Create(&cb)
 	}
 
-	guid,err := uuid.NewV4()
+	guid, err := uuid.NewV4()
 	if err != nil {
 		fmt.Println("error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -69,17 +71,17 @@ func SignUp(c *gin.Context) {
 	if len(sessionRecord.SESSION) == 0 {
 		// store new session id
 		sessionRecord.UserID = newUser.ID
-		sessionRecord.SESSION = fmt.Sprintf("%s",guid)
+		sessionRecord.SESSION = fmt.Sprintf("%s", guid)
 		sessionRecord.EXPIRES = time.Now().AddDate(0, 1, 0)
 		db.Create(&sessionRecord)
 	}
 
 	c.Set("userLoggedIn", true)
 	c.Set("userID", userCreated.ID)
-	c.SetCookie("user", userCreated.Nickname, 3600, "/", "", false, true)
-	c.SetCookie("sessionid", sessionRecord.SESSION, 3600, "/", "", false, true)
+	c.SetCookie("user", userCreated.Nickname, 0, "/", "", false, true)
+	c.SetCookie("sessionid", sessionRecord.SESSION, 0, "/", "", false, true)
 	// respond with user created, the stockpile and default buildings
-	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings, "user": userCreated, "session":sessionRecord})
+	c.JSON(http.StatusOK, gin.H{"status": "created", "stockpile": db.Where("user_id = ?", userCreated.ID).First(&newStockpile), "buildings": newBuildings, "user": userCreated, "session": sessionRecord})
 	return
 }
 
@@ -122,34 +124,41 @@ func SignIn(c *gin.Context) {
 	if hasPassword := models.VerifyPassword(userRecord.Password, json.Password); hasPassword == nil {
 		// user exists
 		// create a GUID
-		guid,err := uuid.NewV4()
+		guid, err := uuid.NewV4()
 		if err != nil {
 			fmt.Println("error:", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-	sessionRecord := models.Session{UserID: userRecord.ID,SESSION: fmt.Sprintf("%s",guid),EXPIRES: time.Now().AddDate(0, 1, 0)}
-	db.Where("user_id = ?", userRecord.ID).Assign(sessionRecord).FirstOrCreate(&sessionRecord)
+		sessionRecord := models.Session{UserID: userRecord.ID, SESSION: fmt.Sprintf("%s", guid), EXPIRES: time.Now().AddDate(0, 1, 0)}
+		db.Where("user_id = ?", userRecord.ID).Assign(sessionRecord).FirstOrCreate(&sessionRecord)
 
-	// get the users resources
-	userResources := models.Stockpile{}
-	if err := db.Where("user_id = ?", userRecord.ID).First(&userResources).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// get the users resources
+		userResources := models.Stockpile{}
+		if err := db.Where("user_id = ?", userRecord.ID).First(&userResources).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// get the users buildings
+		userBuildings := []models.Building{}
+		if err := db.Where("user_id = ?", userRecord.ID).Find(&userBuildings).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		userManagers := models.Managers{}
+		if err := db.Where("user_id = ?", userRecord.ID).Find(&userManagers).Error; err != nil {
+			userManagers = models.Managers{UserID: userRecord.ID, WaterManager: false, FoodManager: false, PeopleManager: false}
+			db.Create(&userManagers)
+			//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			//return
+		}
+		c.Set("userLoggedIn", true)
+		c.Set("userID", userRecord.ID)
+		c.SetCookie("user", userRecord.Nickname, 0, "/", "", false, true)
+		c.SetCookie("sessionid", sessionRecord.SESSION, 0, "/", "", false, true)
+		c.JSON(http.StatusOK, gin.H{"status": "success", "data": userRecord, "session": sessionRecord, "Resources": userResources, "Buildings": userBuildings, "Managers": userManagers})
 		return
-	}
-	// get the users buildings
-	userBuildings := []models.Building{}
-	if err := db.Where("user_id = ?", userRecord.ID).Find(&userBuildings).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	c.Set("userLoggedIn", true)
-	c.Set("userID", userRecord.ID)
-	c.SetCookie("user", userRecord.Nickname, 3600, "/", "", false, true)
-	c.SetCookie("sessionid", sessionRecord.SESSION, 3600, "/", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"status":"success", "data": userRecord, "session": sessionRecord, "Resources": userResources, "Buildings": userBuildings})
-	return
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": hasPassword.Error()})
 	}
@@ -161,14 +170,14 @@ func SignOut(c *gin.Context) {
 		sessionRecord := models.Session{}
 		db.Where("user_id = ?", c.MustGet("userID")).First(&sessionRecord)
 		db.Delete(&sessionRecord)
-		
+
 		c.Set("userLoggedIn", false)
 		c.Set("userID", 0)
-		c.SetCookie("user", "", 3600, "/", "", false, true)
-		c.SetCookie("sessionid", "", 3600, "/", "", false, true)
-		c.JSON(http.StatusOK, gin.H{"status":"success"}) 
+		c.SetCookie("user", "", 0, "/", "", false, true)
+		c.SetCookie("sessionid", "", 0, "/", "", false, true)
+		c.JSON(http.StatusOK, gin.H{"status": "success"})
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error":"Not signed in"}) 
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Not signed in"})
 	}
 }
 func UserExists(conn *gorm.DB, nickname string) bool {
