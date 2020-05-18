@@ -218,6 +218,7 @@ const Content = (props) => {
 
 	}
 	function loadUserData(result) {
+		
 	    setData(result)
 	    let resultUser = result.user
 	    let resultResources = result.Resources
@@ -226,7 +227,10 @@ const Content = (props) => {
 	    let intPeople = parseInt(resultResources.people)
 	    setWater(intWater)
 	    setFood(intFood)
-	    setPeople(intPeople)
+		setPeople(intPeople)
+		setWaterManager(result.Managers.waterManager)
+		setFoodManager(result.Managers.foodManager)
+		setPeopleManager(result.Managers.peopleManager)
 	    let resultBuildings = result.Buildings
 	    let intBuildings = resultBuildings.map((curr) => {
 			curr.lot = parseInt(curr.lot)
@@ -262,13 +266,21 @@ const Content = (props) => {
 				food: tempFood,
 				people: tempPeople
 			}
-
+			let tempWaterMan = waterManager
+			let tempFoodMan = foodManager
+			let tempPeopleMan = peopleManager
+			let tempManagers = {
+				WaterManager: tempWaterMan,
+				FoodManager: tempFoodMan,
+				PeopleManager: tempPeopleMan
+			}
 			let data = {
 				user: tempUser,
 				Resources: tempResources,
 				Buildings: {
 					building: stringBuildings
-				}
+				},
+				ManagersExtern: tempManagers
 			}
 			let jsonData = JSON.stringify(data)
 			setData(stringBuildings)

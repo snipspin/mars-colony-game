@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"time"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -43,7 +42,7 @@ func main() {
 	// check if user logged in
 	r.Use(func(c *gin.Context) {
 		db := c.MustGet("db").(*gorm.DB)
-		t := [2]bool{false,false}
+		t := [2]bool{false, false}
 		u, err := c.Cookie("user")
 		if err == nil {
 			c.Set("user", u)
@@ -66,10 +65,14 @@ func main() {
 				// user exists
 				db.Where("user_id = ? AND session = ?", userRecord.ID, s).First(&sessionRecord)
 				if sessionRecord.ID > 0 {
-					if sessionRecord.EXPIRES.After(time.Now()) {
-						c.Set("userLoggedIn", true)
-						c.Set("userID", userRecord.ID)
-					}
+					/*
+						if sessionRecord.EXPIRES.After(time.Now()) {
+							c.Set("userLoggedIn", true)
+							c.Set("userID", userRecord.ID)
+						}
+					*/
+					c.Set("userLoggedIn", true)
+					c.Set("userID", userRecord.ID)
 				}
 			}
 		}
