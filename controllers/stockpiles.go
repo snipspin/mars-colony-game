@@ -85,7 +85,7 @@ func SetUserState(c *gin.Context) {
 	buildingRecord.UserID = userRecord.ID
 
 	saveBuildings(db, json.Buildings.Building, userRecord)
-	c.JSON(http.StatusOK, gin.H{"status": "success", "Buildings": json.Buildings.Building})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "Buildings": json.Buildings.Building, "Managers": json.ManagersExtern})
 	return
 }
 
@@ -118,7 +118,7 @@ func saveManagers(db *gorm.DB, r models.ManagersExtern, u models.User) error {
 		}
 	}()
 	managersRecord := models.Managers{}
-	tx.Where("users_id = ?", u.ID).First(&managersRecord)
+	tx.Where("user_id = ?", u.ID).First(&managersRecord)
 	managersRecord.WaterManager = r.WaterManager
 	managersRecord.FoodManager = r.FoodManager
 	managersRecord.PeopleManager = r.PeopleManager
