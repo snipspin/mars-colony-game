@@ -41,7 +41,7 @@ func (db dbConnection) Open() (*gorm.DB, error) {
 	if sqlpassword == "" {
 		sqlpassword = "postgres"
 	}
-	dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", sqlhost, sqluser, sqlpassword, sqldb)
+	dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s", sqlhost, sqluser, sqlpassword, sqldb)
 	conn, err := gorm.Open("postgres", dbURI)
 	if err == nil {
 		db.conn = conn
